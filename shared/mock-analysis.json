@@ -1,0 +1,43 @@
+{
+  "analysisId": "mock-0001",
+  "status": "done",
+  "images": [
+    {
+      "url": "https://example.com/product-1.jpg",
+      "aiProbability": 0.87,
+      "signals": ["No camera EXIF data", "Model score 0.87"]
+    },
+    {
+      "url": "https://example.com/product-2.jpg",
+      "aiProbability": 0.12,
+      "signals": ["Camera EXIF data present (Canon EOS 250D)"]
+    }
+  ],
+  "trust": {
+    "score": 40,
+    "checks": [
+      { "id": "https", "passed": true, "message": "The site uses HTTPS." },
+      { "id": "cui_present", "passed": false, "message": "No company registration number (CUI) was found on the page." },
+      { "id": "anpc_link", "passed": false, "message": "The ANPC link required by law is missing." },
+      { "id": "sol_link", "passed": true, "message": "The SOL (EU online dispute resolution) link is present." },
+      { "id": "return_policy", "passed": false, "message": "No return policy was found." }
+    ]
+  },
+  "legal": {
+    "summary": "[MOCK] When you buy online you can withdraw from the contract within 14 days without giving a reason. The seller must clearly display its identity and contact details. This text is placeholder data, not real legal analysis.",
+    "citations": [
+      {
+        "law": "OUG 34/2014",
+        "article": "Art. 9",
+        "text": "[MOCK] Right of withdrawal: 14 days to withdraw from a distance contract.",
+        "link": "https://legislatie.just.ro/"
+      },
+      {
+        "law": "OUG 34/2014",
+        "article": "Art. 6",
+        "text": "[MOCK] Information the trader must provide before a distance contract is concluded.",
+        "link": "https://legislatie.just.ro/"
+      }
+    ]
+  }
+}

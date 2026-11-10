@@ -1,0 +1,11 @@
+{
+  "url": "https://www.olx.ro/d/oferta/iphone-15-pro-sigilat-IDexample.html",
+  "site": "olx",
+  "title": "iPhone 15 Pro, sigilat",
+  "price": 1200,
+  "currency": "RON",
+  "images": ["https://example.com/product-1.jpg", "https://example.com/product-2.jpg"],
+  "seller": { "name": "SC Exemplu SRL", "cui": "RO12345678" },
+  "legalLinks": { "anpc": false, "sol": true },
+  "hasReturnPolicy": false
+}
