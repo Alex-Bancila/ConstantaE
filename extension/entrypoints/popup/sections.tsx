@@ -1,4 +1,5 @@
 import { useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { formatImageCount, formatNumber, t } from '@/lib/i18n';
 import { aiRisk, percent } from '@/lib/risk';
 import type { AnalysisResponse, ImageResult, LegalReport, TrustReport } from '@/lib/types';
 
@@ -43,11 +44,11 @@ export function ImagesSection({ images }: { images: ImageResult[] }) {
   return (
     <section className="report-section" aria-labelledby="image-heading">
       <div className="section-heading flex items-baseline justify-between gap-3">
-        <h3 className="section-title" id="image-heading">Image analysis</h3>
-        <span className="section-count">{images.length} {images.length === 1 ? 'image' : 'images'}</span>
+        <h3 className="section-title" id="image-heading">{t('imageAnalysis')}</h3>
+        <span className="section-count">{formatImageCount(images.length)}</span>
       </div>
       {!images.length ? (
-        <p className="muted">No images were returned for this listing.</p>
+        <p className="muted">{t('noImages')}</p>
       ) : (
         <div className="space-y-3">
           {images.map((item, index) => {
@@ -58,13 +59,13 @@ export function ImagesSection({ images }: { images: ImageResult[] }) {
               <div className="image-row flex items-start gap-3" key={`${item.url}-${index}`}>
                 <div className="image-thumbnail relative flex shrink-0 items-center justify-center overflow-hidden">
                   <Icon name="image" size={20}/>
-                  {item.url && <img className="absolute inset-0 h-full w-full object-cover" src={item.url} alt={`Product image ${index + 1}`} loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }}/>}</div>
+                  {item.url && <img className="absolute inset-0 h-full w-full object-cover" src={item.url} alt={t('productImage', formatNumber(index + 1))} loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none'; }}/>}</div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="image-label">Product image {index + 1}</p>
+                    <p className="image-label">{t('productImage', formatNumber(index + 1))}</p>
                     <p className={`image-probability ${risk === 'high' ? 'score-low' : risk === 'medium' ? 'score-caution' : 'muted'}`}>{estimate}</p>
                   </div>
-                  <p className="image-description">AI likelihood</p>
+                  <p className="image-description">{t('aiLikelihood')}</p>
                   <div className="probability-track" aria-hidden="true"><div className={`probability-fill probability-${risk}`} style={{ width: estimate }}/></div>
                   {item.signals.length > 0 && <p className="image-signals">{item.signals.join(' · ')}</p>}
                 </div>
@@ -73,7 +74,7 @@ export function ImagesSection({ images }: { images: ImageResult[] }) {
           })}
         </div>
       )}
-      <p className="section-note">AI scores are estimates, not proof an image was generated artificially.</p>
+      <p className="section-note">{t('aiDisclaimer')}</p>
     </section>
   );
 }
@@ -82,17 +83,17 @@ export function TrustSection({ trust }: { trust: TrustReport | null }) {
   return (
     <section className="report-section" aria-labelledby="trust-heading">
       <div className="section-heading flex items-baseline justify-between gap-3">
-        <h3 className="section-title" id="trust-heading">Seller trust check</h3>
-        {trust && <span className={`trust-score ${scoreColor(trust.score)}`}>{trust.score}/100</span>}
+        <h3 className="section-title" id="trust-heading">{t('sellerTrustCheck')}</h3>
+        {trust && <span className={`trust-score ${scoreColor(trust.score)}`}>{formatNumber(trust.score)}/100</span>}
       </div>
-      {!trust ? <p className="muted">No trust assessment available.</p> : (
+      {!trust ? <p className="muted">{t('noTrustAssessment')}</p> : (
         <>
-          <p className="trust-description">Indicative trust score. Not a safety guarantee.</p>
+          <p className="trust-description">{t('trustDisclaimer')}</p>
           <div className="space-y-3">
-            {trust.checks.length === 0 ? <p className="muted">No trust checks were returned.</p> : trust.checks.map((check) => (
+            {trust.checks.length === 0 ? <p className="muted">{t('noTrustChecks')}</p> : trust.checks.map((check) => (
               <div key={check.id} className="flex items-start gap-2">
                 <span className={`trust-check-icon shrink-0 ${check.passed ? 'score-good' : 'score-caution'}`}><Icon name={check.passed ? 'check' : 'warning'} size={16}/></span>
-                <p><span className="sr-only">{check.passed ? 'Passed: ' : 'Needs review: '}</span>{check.message}</p>
+                <p><span className="sr-only">{check.passed ? t('passedPrefix') : t('needsReviewPrefix')}</span>{check.message}</p>
               </div>
             ))}
           </div>
@@ -105,18 +106,18 @@ export function TrustSection({ trust }: { trust: TrustReport | null }) {
 export function LegalSection({ legal }: { legal: LegalReport | null }) {
   return (
     <section className="report-section" aria-labelledby="legal-heading">
-      <h3 className="section-title" id="legal-heading">Legal report</h3>
-      {!legal ? <p className="muted">No legal report available yet.</p> : (
+      <h3 className="section-title" id="legal-heading">{t('legalReport')}</h3>
+      {!legal ? <p className="muted">{t('noLegalReport')}</p> : (
         <>
           <p>{legal.summary}</p>
           <div className="citations space-y-4">
-            {legal.citations.length === 0 ? <p className="muted">No verified citations returned.</p> : legal.citations.map((citation, index) => {
+            {legal.citations.length === 0 ? <p className="muted">{t('noCitations')}</p> : legal.citations.map((citation, index) => {
               const link = citationUrl(citation.link);
               return (
                 <div key={`${citation.law}-${citation.article}-${index}`} className="citation">
                   <p className="citation-heading">{citation.law}{' '}<span className="citation-article">{citation.article}</span></p>
                   <p className="citation-text">{citation.text}</p>
-                  {link && <a className="citation-link inline-flex items-center gap-2" href={link} target="_blank" rel="noopener noreferrer">Open legislation <Icon name="arrow" size={14}/></a>}
+                  {link && <a className="citation-link inline-flex items-center gap-2" href={link} target="_blank" rel="noopener noreferrer">{t('openLegislation')} <Icon name="arrow" size={14}/></a>}
                 </div>
               );
             })}
@@ -128,9 +129,9 @@ export function LegalSection({ legal }: { legal: LegalReport | null }) {
 }
 
 const resultTabs = [
-  { id: 'images', label: 'Images' },
-  { id: 'seller', label: 'Seller' },
-  { id: 'legal', label: 'Legal' },
+  { id: 'images', label: t('tabImages') },
+  { id: 'seller', label: t('tabSeller') },
+  { id: 'legal', label: t('tabLegal') },
 ] as const;
 
 export function AnalysisResults({ analysis }: { analysis: AnalysisResponse }) {
@@ -161,15 +162,15 @@ export function AnalysisResults({ analysis }: { analysis: AnalysisResponse }) {
   return (
     <section className="analysis-results" aria-labelledby="overview-heading">
       <div className="overview-heading flex items-center justify-between gap-3">
-        <h2 id="overview-heading">Analysis overview</h2>
-        <p className="completion-status flex items-center gap-1" role="status"><Icon name="check" size={14}/>Complete</p>
+        <h2 id="overview-heading">{t('analysisOverview')}</h2>
+        <p className="completion-status flex items-center gap-1" role="status"><Icon name="check" size={14}/>{t('complete')}</p>
       </div>
       <dl className="overview-metrics grid grid-cols-3 gap-3">
-        <div><dt>Highest AI estimate</dt><dd>{highestProbability == null ? 'N/A' : `${highestProbability}%`}</dd></div>
-        <div><dt>Seller score</dt><dd>{analysis.trust ? `${analysis.trust.score}/100` : 'N/A'}</dd></div>
-        <div><dt>Legal sources</dt><dd>{analysis.legal ? analysis.legal.citations.length : 'N/A'}</dd></div>
+        <div><dt>{t('highestAiEstimate')}</dt><dd>{highestProbability == null ? t('notAvailable') : `${formatNumber(highestProbability)}%`}</dd></div>
+        <div><dt>{t('sellerScore')}</dt><dd>{analysis.trust ? `${formatNumber(analysis.trust.score)}/100` : t('notAvailable')}</dd></div>
+        <div><dt>{t('legalSources')}</dt><dd>{analysis.legal ? formatNumber(analysis.legal.citations.length) : t('notAvailable')}</dd></div>
       </dl>
-      <div className="results-tabs grid grid-cols-3 gap-1" role="tablist" aria-label="Analysis results">
+      <div className="results-tabs grid grid-cols-3 gap-1" role="tablist" aria-label={t('analysisResults')}>
         {resultTabs.map((tab, index) => (
           <button
             key={tab.id}

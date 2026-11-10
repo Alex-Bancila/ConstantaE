@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import { mockAnalysis } from './mock';
 import type { AnalysisResponse, PageData } from './types';
 
@@ -14,7 +15,7 @@ export async function analyzePage(page: PageData): Promise<AnalysisResponse> {
 }
 
 export async function getAnalysis(analysisId: string): Promise<AnalysisResponse> {
-  if (USE_MOCK) throw new Error('Mock analyses are never pending.');
+  if (USE_MOCK) throw new Error(t('errorMockPending'));
   return request<AnalysisResponse>(`/analyze/${encodeURIComponent(analysisId)}`);
 }
 
@@ -23,8 +24,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   try {
     response = await fetch(`${API_URL}${path}`, init);
   } catch {
-    throw new Error(`Cannot reach the backend at ${API_URL}. Is it running?`);
+    throw new Error(t('errorBackendUnreachable', API_URL));
   }
-  if (!response.ok) throw new Error(`The backend returned ${response.status} for ${path}.`);
+  if (!response.ok) throw new Error(t('errorBackendHttp', [String(response.status), path]));
   return (await response.json()) as T;
 }
