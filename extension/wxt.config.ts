@@ -8,8 +8,8 @@ export default defineConfig({
   modules: ['@wxt-dev/module-react'],
   manifest: {
     name: 'ConstantaE',
-    description:
-      'Checks product photos for AI generation, the seller for red flags and the offer against Romanian consumer law.',
+    default_locale: 'ro',
+    description: '__MSG_extensionDescription__',
     permissions: ['activeTab'],
     // Lets the background worker call the backend.
     host_permissions: [`${apiUrl.protocol}//${apiUrl.hostname}/*`],
