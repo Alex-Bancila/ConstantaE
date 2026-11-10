@@ -201,6 +201,9 @@
   "complete": {
     "message": "Finalizat"
   },
+  "noAnalysisResults": {
+    "message": "Nu sunt disponibile rezultate"
+  },
   "highestAiEstimate": {
     "message": "Estimare IA maximă"
   },

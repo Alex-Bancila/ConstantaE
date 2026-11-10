@@ -34,6 +34,7 @@ export default function App() {
     const request = {};
     activeAnalysis.current = request;
     const isCurrent = () => activeAnalysis.current === request;
+    if (mode === 'live') setPage(null);
     setState({ kind: 'loading', step: mode === 'demo' ? t('loadingSample') : t('extractingListing') });
 
     try {
@@ -105,14 +106,14 @@ export default function App() {
       </header>
       <main className="popup-main">
         <div className="listing-toolbar flex items-center justify-between gap-3">
-          <p className="listing-source">{mode === 'demo' || state.kind === 'done' ? page?.site?.toUpperCase() || t('unknownSite') : t('currentTab')}{mode === 'demo' && <span>{t('demoListing')}</span>}</p>
+          <p className="listing-source">{page ? page.site?.toUpperCase() || t('unknownSite') : t('currentTab')}{mode === 'demo' && <span>{t('demoListing')}</span>}</p>
           <select className="mode-selector" aria-label={t('analysisMode')} value={mode} onChange={(event) => changeMode(event.currentTarget.value as Mode)}>
             <option value="demo">{t('modeDemo')}</option>
             <option value="live">{t('modeLive')}</option>
           </select>
         </div>
-        {page && (mode === 'demo' || state.kind === 'done') && <ProductHeader page={page}/>}
-        {state.kind !== 'loading' && <button type="button" className={`button ${state.kind === 'error' ? 'button-secondary' : 'button-primary'}`} onClick={() => void analyze()}><Icon name={state.kind === 'done' ? 'refresh' : 'scan'} size={16}/><span>{state.kind === 'done' ? t('analyzeAgain') : mode === 'demo' ? t('runDemoAnalysis') : t('analyzeCurrentPage')}</span></button>}
+        {page && <ProductHeader page={page}/>}
+        {state.kind !== 'loading' && state.kind !== 'error' && <button type="button" className="button button-primary" onClick={() => void analyze()}><Icon name={state.kind === 'done' ? 'refresh' : 'scan'} size={16}/><span>{state.kind === 'done' ? t('analyzeAgain') : mode === 'demo' ? t('runDemoAnalysis') : t('analyzeCurrentPage')}</span></button>}
         <p className="mode-description">{mode === 'demo' ? t('demoDescription') : USE_MOCK ? t('liveMockDescription') : t('liveDescription')}</p>
         {state.kind === 'idle' && <section className="idle-state" aria-label={t('readyToAnalyze')}><h2>{t('readyToAnalyze')}</h2><p>{t('readyDescription')}</p></section>}
         {state.kind === 'loading' && <section className="loading-state flex items-start gap-3" role="status"><span className="loading-icon shrink-0 motion-safe:animate-spin"><Icon name="loader" size={18}/></span><div className="min-w-0"><h2 className="state-title">{t('analyzingProduct')}</h2><p className="state-detail">{state.step}</p></div></section>}
@@ -128,10 +129,10 @@ function ProductHeader({ page }: { page: PageData }) {
   const price = page.price == null ? t('priceUnavailable') : [formatNumber(page.price), page.currency].filter(Boolean).join(' ');
   return (
     <section className="product-summary" aria-label={t('currentListing')}>
-      <h2>{page.title || t('untitledListing')}</h2>
+      <h2>{page.title?.trim() ? page.title : t('untitledListing')}</h2>
       <div className="product-details flex items-baseline justify-between gap-2">
         <span className="product-price">{price}</span>
-        <p className="product-seller">{page.seller.name || t('sellerUnknown')}</p>
+        <p className="product-seller">{page.seller.name?.trim() ? page.seller.name : t('sellerUnknown')}</p>
       </div>
     </section>
   );
