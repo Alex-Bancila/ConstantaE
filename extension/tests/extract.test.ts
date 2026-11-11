@@ -4,7 +4,7 @@ import path from 'node:path';
 import test, { describe } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
-import { extractPage, parsePriceText } from '../lib/extract.ts';
+import { extractCui, extractPage, parsePriceText } from '../lib/extract.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const qaPagesDir = path.resolve(__dirname, '../../qa/pages');
@@ -184,5 +184,142 @@ describe('parsePriceText', () => {
 
   test('parses gratuit / free items', () => {
     assert.deepEqual(parsePriceText('Gratuit'), { price: 0, currency: 'RON' });
+  });
+});
+
+describe('extractCui', () => {
+  test('extracts CUI with CUI prefix and optional RO', () => {
+    assert.equal(extractCui('Detalii vanzator. CUI: RO14399840.'), 'RO14399840');
+    assert.equal(extractCui('CUI: 14399840'), '14399840');
+    assert.equal(extractCui('c.u.i. RO 14399840'), 'RO14399840');
+  });
+
+  test('extracts CUI with CIF prefix', () => {
+    assert.equal(extractCui('Factura emisa de SC SRL, CIF: 18189442'), '18189442');
+    assert.equal(extractCui('C.I.F. RO 18189442'), 'RO18189442');
+  });
+
+  test('extracts CUI with Cod fiscal prefix', () => {
+    assert.equal(extractCui('Date fiscale - Cod fiscal: RO12345674'), 'RO12345674');
+    assert.equal(extractCui('cod fiscal: 12345674'), '12345674');
+  });
+
+  test('extracts CUI with Cod unic de inregistrare prefix (with or without diacritics)', () => {
+    assert.equal(extractCui('Cod unic de înregistrare: 98765432'), '98765432');
+    assert.equal(extractCui('Cod unic de inregistrare: RO 98765432'), 'RO98765432');
+  });
+
+  test('returns null when no CUI is present', () => {
+    assert.equal(extractCui('Telefon: 0722123456. Pret: 100 lei.'), null);
+    assert.equal(extractCui(''), null);
+  });
+});
+
+describe('Seller and CUI extraction from page snippets', () => {
+  test('extracts individual person seller on OLX with no CUI', () => {
+    const html = `
+      <!doctype html>
+      <html>
+        <body>
+          <h1 data-cy="ad_title">Bicicleta MTB</h1>
+          <div data-testid="user-profile-link">
+            <h4>Andrei Pop</h4>
+            <p>Pe OLX din mai 2021</p>
+          </div>
+          <div data-testid="ad-price-container"><h3>500 lei</h3></div>
+        </body>
+      </html>
+    `;
+    const dom = new JSDOM(html, { url: 'https://www.olx.ro/d/oferta/bicicleta-ID123.html' });
+    const data = extractPage(dom.window.document, 'https://www.olx.ro/d/oferta/bicicleta-ID123.html');
+
+    assert.equal(data.seller.name, 'Andrei Pop');
+    assert.equal(data.seller.cui, null);
+  });
+
+  test('extracts company seller and CUI on OLX', () => {
+    const html = `
+      <!doctype html>
+      <html>
+        <body>
+          <h1 data-cy="ad_title">Canapea piele</h1>
+          <div data-testid="user-profile-link">
+            <h4>SC Mobilier Confort SRL</h4>
+          </div>
+          <div data-cy="ad_description">
+            <p>Companie specializata. Emitem factura. CUI: RO14399840.</p>
+          </div>
+          <div data-testid="ad-price-container"><h3>1.500 lei</h3></div>
+        </body>
+      </html>
+    `;
+    const dom = new JSDOM(html, { url: 'https://www.olx.ro/d/oferta/canapea-ID456.html' });
+    const data = extractPage(dom.window.document, 'https://www.olx.ro/d/oferta/canapea-ID456.html');
+
+    assert.equal(data.seller.name, 'SC Mobilier Confort SRL');
+    assert.equal(data.seller.cui, 'RO14399840');
+  });
+
+  test('extracts eMAG official seller from JSON-LD and CUI from page', () => {
+    const html = `
+      <!doctype html>
+      <html>
+        <head>
+          <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "Product",
+              "name": "Televizor OLED",
+              "offers": {
+                "@type": "Offer",
+                "price": "3999",
+                "priceCurrency": "RON",
+                "seller": {
+                  "@type": "Organization",
+                  "name": "eMAG"
+                }
+              }
+            }
+          </script>
+        </head>
+        <body>
+          <h1 class="page-title">Televizor OLED</h1>
+          <p class="product-new-price">3.999 Lei</p>
+          <footer>
+            <p>Dante International SA, Cod fiscal: RO14399840</p>
+          </footer>
+        </body>
+      </html>
+    `;
+    const dom = new JSDOM(html, { url: 'https://www.emag.ro/tv-oled/pd/XYZ/' });
+    const data = extractPage(dom.window.document, 'https://www.emag.ro/tv-oled/pd/XYZ/');
+
+    assert.equal(data.seller.name, 'eMAG');
+    assert.equal(data.seller.cui, 'RO14399840');
+  });
+
+  test('extracts eMAG marketplace seller from DOM vendor block and CUI', () => {
+    const html = `
+      <!doctype html>
+      <html>
+        <body>
+          <h1 class="page-title">Placa video RTX 4070</h1>
+          <p class="product-new-price">3.299 Lei</p>
+          <div class="product-page">
+            <p class="product-vendor-details">
+              Vândut și livrat de: <a href="/magazin/pc-garage">PC Garage SRL</a>
+            </p>
+            <div class="seller-info">
+              <span>Date identificare: Cod unic de înregistrare: 18189442</span>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+    const dom = new JSDOM(html, { url: 'https://www.emag.ro/placa-video/pd/ABC/' });
+    const data = extractPage(dom.window.document, 'https://www.emag.ro/placa-video/pd/ABC/');
+
+    assert.equal(data.seller.name, 'PC Garage SRL');
+    assert.equal(data.seller.cui, '18189442');
   });
 });
