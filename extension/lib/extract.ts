@@ -6,9 +6,6 @@ import type { PageData } from './types';
  * Starts with sources many shops share: schema.org Product data in JSON-LD and
  * Open Graph meta tags, then falls back to site-specific selectors where the
  * generic data is missing.
- *
- * TODO(Ștefana):
- * - detect a return policy link
  */
 export function extractPage(doc: Document, url: string): PageData {
   const site = detectSite(url, doc);
@@ -84,8 +81,27 @@ export function extractPage(doc: Document, url: string): PageData {
       anpc: hasLinkTo(doc, 'anpc.ro'),
       sol: hasLinkTo(doc, 'ec.europa.eu/consumers/odr'),
     },
-    hasReturnPolicy: false,
+    hasReturnPolicy: detectReturnPolicy(doc),
   };
+}
+
+export function detectReturnPolicy(doc: Document): boolean {
+  const returnRegex = /politica\s+de\s+retur|drept(?:ul)?\s+de\s+retragere|\bretur\b|returnar/i;
+
+  for (const link of doc.links) {
+    const href = (link.href || link.getAttribute('href') || '').toLowerCase();
+    const text = (link.textContent || '').trim();
+
+    if (href.includes('retur') || href.includes('retragere') || href.includes('return')) {
+      return true;
+    }
+    if (returnRegex.test(text)) {
+      return true;
+    }
+  }
+
+  const bodyText = doc.body?.textContent ?? '';
+  return returnRegex.test(bodyText);
 }
 
 export function extractCui(text: string): string | null {
