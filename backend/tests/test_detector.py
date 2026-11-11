@@ -1,4 +1,4 @@
-"""Tests for AI-generated image detection (AI_MODE=real and AI_MODE=mock)."""
+"""Tests for AI-generated image detection and metadata checks."""
 
 from __future__ import annotations
 
@@ -30,11 +30,36 @@ class _FakeResponse:
         self._stream.close()
 
 
-def _make_jpeg_bytes(color: tuple[int, int, int] = (120, 180, 210)) -> bytes:
+def _make_jpeg_bytes(
+    color: tuple[int, int, int] = (120, 180, 210),
+    *,
+    software: str | None = None,
+    make: str | None = None,
+    model: str | None = None,
+    c2pa_payload: bytes | None = None,
+) -> bytes:
     img = Image.new("RGB", (32, 32), color=color)
+    exif = img.getexif()
+    if software:
+        exif[detector.EXIF_SOFTWARE] = software
+    if make:
+        exif[detector.EXIF_MAKE] = make
+    if model:
+        exif[detector.EXIF_MODEL] = model
+
     buf = io.BytesIO()
-    img.save(buf, format="JPEG", quality=90)
-    return buf.getvalue()
+    if len(exif) > 0:
+        img.save(buf, format="JPEG", quality=90, exif=exif)
+    else:
+        img.save(buf, format="JPEG", quality=90)
+
+    data = buf.getvalue()
+    if c2pa_payload:
+        # Embed C2PA marker inside a JPEG comment segment (0xFFFE) before the EOI marker (0xFFD9).
+        segment_len = (len(c2pa_payload) + 2).to_bytes(2, "big")
+        comment_segment = b"\xff\xfe" + segment_len + c2pa_payload
+        data = data[:-2] + comment_segment + data[-2:]
+    return data
 
 
 @pytest.fixture
@@ -45,6 +70,12 @@ def real_mode(monkeypatch: pytest.MonkeyPatch):
     yield
     detector._load_detector.cache_clear()
     get_settings.cache_clear()
+
+
+@pytest.fixture
+def stub_low_model_score(monkeypatch: pytest.MonkeyPatch):
+    """Stub the HF model to return a low AI probability (0.12) so metadata boosts are clear."""
+    monkeypatch.setattr(detector, "_score_image", lambda image: 0.12)
 
 
 def test_mock_mode_returns_stable_score():
@@ -112,10 +143,81 @@ def test_real_mode_scores_small_images_and_loads_model_once(
         assert result.url == url
         assert 0.0 <= result.ai_probability <= 1.0
         assert result.ai_probability == 0.88
+        assert "No camera EXIF data" in result.signals
         assert any("Model score 0.88" in s for s in result.signals)
 
     # Model is loaded once across multiple detect() calls.
     assert load_calls == 1
+
+
+def test_exif_software_naming_ai_tool_adds_signal_and_raises_probability(
+    real_mode: None, stub_low_model_score: None, monkeypatch: pytest.MonkeyPatch
+):
+    img_bytes = _make_jpeg_bytes(software="Midjourney v6.1")
+    monkeypatch.setattr(
+        urllib.request,
+        "urlopen",
+        lambda req, timeout=10: _FakeResponse(img_bytes),
+    )
+
+    result = detector.detect("https://example.com/mj.jpg")
+
+    assert "EXIF Software names AI tool (Midjourney v6.1)" in result.signals
+    assert "No camera EXIF data" in result.signals
+    assert result.ai_probability >= detector.METADATA_AI_PROOF_MIN_PROBABILITY
+    assert result.ai_probability > 0.12
+
+
+def test_c2pa_credentials_add_signal_and_raise_probability(
+    real_mode: None, stub_low_model_score: None, monkeypatch: pytest.MonkeyPatch
+):
+    c2pa_bytes = b"urn:c2pa:1234-5678 c2pa.claim trainedAlgorithmicMedia"
+    img_bytes = _make_jpeg_bytes(c2pa_payload=c2pa_bytes)
+    monkeypatch.setattr(
+        urllib.request,
+        "urlopen",
+        lambda req, timeout=10: _FakeResponse(img_bytes),
+    )
+
+    result = detector.detect("https://example.com/c2pa.jpg")
+
+    assert "C2PA content credentials indicate AI generation" in result.signals
+    assert result.ai_probability >= detector.METADATA_AI_PROOF_MIN_PROBABILITY
+    assert result.ai_probability > 0.12
+
+
+def test_camera_exif_present_is_reported_in_plain_language(
+    real_mode: None, stub_low_model_score: None, monkeypatch: pytest.MonkeyPatch
+):
+    img_bytes = _make_jpeg_bytes(make="Canon", model="Canon EOS 250D", software="Adobe Lightroom")
+    monkeypatch.setattr(
+        urllib.request,
+        "urlopen",
+        lambda req, timeout=10: _FakeResponse(img_bytes),
+    )
+
+    result = detector.detect("https://example.com/camera.jpg")
+
+    assert "Camera EXIF data present (Canon EOS 250D)" in result.signals
+    assert "No camera EXIF data" not in result.signals
+    assert not any("EXIF Software names AI tool" in s for s in result.signals)
+    assert result.ai_probability == 0.12
+
+
+def test_missing_camera_exif_adds_signal(
+    real_mode: None, stub_low_model_score: None, monkeypatch: pytest.MonkeyPatch
+):
+    img_bytes = _make_jpeg_bytes()
+    monkeypatch.setattr(
+        urllib.request,
+        "urlopen",
+        lambda req, timeout=10: _FakeResponse(img_bytes),
+    )
+
+    result = detector.detect("https://example.com/stripped.jpg")
+
+    assert "No camera EXIF data" in result.signals
+    assert result.ai_probability == 0.12
 
 
 def test_download_timeout_returns_clear_signal(real_mode: None, monkeypatch: pytest.MonkeyPatch):
@@ -206,6 +308,7 @@ def test_real_haywoodsloan_model_on_small_images(real_mode: None, monkeypatch: p
 
     for res in (first, second):
         assert 0.0 <= res.ai_probability <= 1.0
+        assert "No camera EXIF data" in res.signals
         assert any(detector.MODEL_ID in s and "Model score" in s for s in res.signals)
 
     assert detector._load_detector.cache_info().hits == 1
