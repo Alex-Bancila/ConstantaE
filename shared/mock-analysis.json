@@ -17,7 +17,7 @@
     "score": 40,
     "checks": [
       { "id": "https", "passed": true, "message": "The site uses HTTPS." },
-      { "id": "cui_present", "passed": false, "message": "No company registration number (CUI) was found on the page." },
+      { "id": "cui_valid", "passed": false, "message": "No company registration number (CUI) was found on the page." },
       { "id": "anpc_link", "passed": false, "message": "The ANPC link required by law is missing." },
       { "id": "sol_link", "passed": true, "message": "The SOL (EU online dispute resolution) link is present." },
       { "id": "return_policy", "passed": false, "message": "No return policy was found." }
