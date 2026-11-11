@@ -101,6 +101,74 @@ describe('OLX listing extraction', () => {
   });
 });
 
+describe('eMAG product page extraction', () => {
+  test('extracts title, price, currency, all gallery photos, and ANPC/SOL links for eMAG laptop', () => {
+    const url = 'https://www.emag.ro/laptop-gaming-lenovo-legion-5-16irx9-IDlaptop/pd/EXAMP1/';
+    const doc = loadDocument('emag-laptop/product.html', url);
+    const data = extractPage(doc, url);
+
+    assert.equal(data.site, 'emag');
+    assert.equal(data.title, 'Laptop Gaming Lenovo Legion 5 16IRX9 cu procesor Intel Core i7');
+    assert.equal(data.price, 5499.99);
+    assert.equal(data.currency, 'RON');
+    assert.equal(data.images.length, 4);
+    assert.ok(data.images[0]?.includes('laptop-1.jpg'));
+    assert.ok(data.images[1]?.includes('laptop-2.jpg'));
+    assert.ok(data.images[2]?.includes('laptop-3.jpg'));
+    assert.ok(data.images[3]?.includes('laptop-4.jpg'));
+    assert.equal(data.legalLinks.anpc, true);
+    assert.equal(data.legalLinks.sol, true);
+  });
+
+  test('extracts title, DOM price, currency, all photos, and ANPC-SAL/SOL links for eMAG TV', () => {
+    const url = 'https://www.emag.ro/televizor-samsung-55du7172-4k-IDtv/pd/EXAMP2/';
+    const doc = loadDocument('emag-tv/product.html', url);
+    const data = extractPage(doc, url);
+
+    assert.equal(data.site, 'emag');
+    assert.equal(data.title, 'Televizor Samsung LED 55DU7172, 138 cm, 4K Ultra HD');
+    assert.equal(data.price, 2199);
+    assert.equal(data.currency, 'RON');
+    assert.equal(data.images.length, 3);
+    assert.ok(data.images[0]?.includes('tv-1.jpg'));
+    assert.ok(data.images[1]?.includes('tv-2.jpg'));
+    assert.ok(data.images[2]?.includes('tv-3.jpg'));
+    assert.equal(data.legalLinks.anpc, true);
+    assert.equal(data.legalLinks.sol, true);
+  });
+
+  test('extracts title via page-title selector when og:title is missing, sup decimal price, photos and links for eMAG shoes', () => {
+    const url = 'https://www.emag.ro/pantofi-sport-puma-smash-v2-IDshoes/pd/EXAMP3/';
+    const doc = loadDocument('emag-shoes/product.html', url);
+    const data = extractPage(doc, url);
+
+    assert.equal(data.site, 'emag');
+    assert.equal(data.title, 'Pantofi sport Puma Smash v2, Unisex, Negru');
+    assert.equal(data.price, 189.5);
+    assert.equal(data.currency, 'RON');
+    assert.equal(data.images.length, 3);
+    assert.ok(data.images[0]?.includes('shoes-1.jpg'));
+    assert.ok(data.images[1]?.includes('shoes-2.jpg'));
+    assert.ok(data.images[2]?.includes('shoes-3.jpg'));
+    assert.equal(data.legalLinks.anpc, true);
+    assert.equal(data.legalLinks.sol, true);
+  });
+
+  test('detects eMAG page when served from localhost during testing', () => {
+    const url = 'http://localhost:8001/emag-laptop/product.html';
+    const doc = loadDocument('emag-laptop/product.html', url);
+    const data = extractPage(doc, url);
+
+    assert.equal(data.site, 'emag');
+    assert.equal(data.title, 'Laptop Gaming Lenovo Legion 5 16IRX9 cu procesor Intel Core i7');
+    assert.equal(data.price, 5499.99);
+    assert.equal(data.currency, 'RON');
+    assert.equal(data.images.length, 4);
+    assert.equal(data.legalLinks.anpc, true);
+    assert.equal(data.legalLinks.sol, true);
+  });
+});
+
 describe('parsePriceText', () => {
   test('parses romanian formatted prices with thousands separator', () => {
     assert.deepEqual(parsePriceText('4.800 lei'), { price: 4800, currency: 'RON' });
