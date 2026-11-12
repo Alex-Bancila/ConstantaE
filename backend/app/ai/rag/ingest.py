@@ -9,6 +9,9 @@ TODO(Lucas):
 from pathlib import Path
 
 from app.ai.rag.articles import LawArticle, split_articles
+from app.ai.rag.database import connect_database, ensure_schema, upsert_articles
+from app.ai.rag.embeddings import ArticleEmbedder
+from app.config import get_settings
 
 LAWS_DIR = Path(__file__).resolve().parents[3] / "data" / "laws"
 LAW_SOURCES = {
@@ -64,11 +67,19 @@ def load_articles() -> list[LawArticle]:
 
 def main() -> None:
     articles = load_articles()
-    counts: dict[str, int] = {}
-    for article in articles:
-        counts[article.law_name] = counts.get(article.law_name, 0) + 1
-    for law_name, count in counts.items():
-        print(f"{law_name}: {count} articles")
+    if not articles:
+        return
+
+    database_url = get_settings().database_url
+    if not database_url:
+        raise RuntimeError("DATABASE_URL must be set to ingest law articles")
+
+    embedder = ArticleEmbedder()
+    embeddings = embedder.embed(articles)
+    with connect_database(database_url) as connection:
+        ensure_schema(connection, embedder.dimensions)
+        upsert_articles(connection, articles, embeddings)
+    print(f"Stored {len(articles)} law articles in law_chunks")
 
 
 if __name__ == "__main__":
