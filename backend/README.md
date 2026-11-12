@@ -32,7 +32,8 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `AI_MODE` | `mock` | `mock` = fake AI results; `real` = run the real AI code |
 | `ASYNC` | `false` | `true` = send the AI work to the job queue |
 | `DATABASE_URL` | | Postgres with pgvector |
-| `REDIS_URL` | `redis://localhost:6379` | Redis for the job queue |
+| `REDIS_URL` | `redis://localhost:6379` | Redis for the job queue and result storage |
+| `RESULT_TTL_SECONDS` | `86400` | Expiration time for analysis results in Redis (default: 24h) |
 | `LLM_API_KEY` | | Key for the language model used by the legal report |
 
 ### Redis & Worker
