@@ -2,3 +2,6 @@ fastapi~=0.162
 uvicorn[standard]~=0.54
 pydantic~=2.14
 pydantic-settings~=2.16
+redis~=8.1
+rq~=3.0
+

@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     database_url: str | None = None
     redis_url: str | None = None
     llm_api_key: str | None = None
+    result_ttl_seconds: int = Field(default=86400, validation_alias="RESULT_TTL_SECONDS")
 
 
 @lru_cache
