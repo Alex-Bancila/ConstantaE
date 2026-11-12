@@ -1,0 +1,65 @@
+{
+  "scenario": "suspicious-seller",
+  "description": "Suspicious rogue seller offering counterfeit/clone luxury electronics at 88% discount with missing legal identity and illegal return waiver",
+  "pageData": {
+    "title": "iPhone 16 Pro Max 256GB Titanium Blue - Sigilat, Factura si Garantie",
+    "price": 850.0,
+    "currency": "RON",
+    "images": ["photo1.png"],
+    "seller": {
+      "name": "TechOutlet Express Online",
+      "cui": null
+    },
+    "legalLinks": {
+      "anpc": false,
+      "sol": false
+    },
+    "hasReturnPolicy": false
+  },
+  "expectedAnalysis": {
+    "status": "done",
+    "images": [
+      {
+        "url": "photo1.png",
+        "expectedRisk": "high",
+        "aiProbabilityRange": [0.4, 0.8],
+        "signals": ["Non-standard hardware proportions", "Obvious counterfeit/knockoff design"]
+      }
+    ],
+    "trust": {
+      "expectedScore": 0,
+      "checks": {
+        "https": { "passed": false, "note": "Localhost / unencrypted HTTP" },
+        "cui_present": { "passed": false, "note": "No CUI/CIF found on the page" },
+        "anpc_link": { "passed": false, "note": "ANPC link is missing" },
+        "sol_link": { "passed": false, "note": "SOL link is missing" },
+        "return_policy": { "passed": false, "note": "No lawful return policy; seller attempts to waive statutory rights" }
+      }
+    },
+    "legal": {
+      "summary": "CRITICAL RISK: The seller fails all legal trust checks. Romanian consumer law strictly prohibits waiving the 14-day right of withdrawal from distance contracts (any such waiver clause is legally null and void). Missing company registration and absence of ANPC/SOL links indicate a likely fraudulent shop.",
+      "citations": [
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 9",
+          "subject": "Dreptul obligatoriu de retragere in termen de 14 zile"
+        },
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 26",
+          "subject": "Caracterul imperativ al drepturilor consumatorului (clauzele de renuntare la retur sunt nule de drept)"
+        },
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 6",
+          "subject": "Cerinte obligatorii privind identitatea vanzatorului, adresa si datele de contact"
+        },
+        {
+          "law": "OG 21/1992",
+          "article": "Art. 9",
+          "subject": "Protectia drepturilor si intereselor economice ale consumatorilor"
+        }
+      ]
+    }
+  }
+}

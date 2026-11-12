@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="roomGlow" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+    <radialGradient id="aiOrbGrad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fdf4ff"/>
+      <stop offset="20%" stop-color="#e879f9"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="80%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </radialGradient>
+    <filter id="aiGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#roomGlow)" rx="8"/>
+
+  <circle cx="200" cy="170" r="110" fill="#a855f7" opacity="0.25" filter="url(#aiGlow)"/>
+  <circle cx="200" cy="170" r="85" fill="#38bdf8" opacity="0.3" filter="url(#aiGlow)"/>
+
+  <ellipse cx="200" cy="305" rx="100" ry="24" fill="#78350f"/>
+  <ellipse cx="200" cy="298" rx="100" ry="24" fill="#92400e"/>
+  <ellipse cx="200" cy="294" rx="90" ry="20" fill="#b45309"/>
+  <ellipse cx="200" cy="294" rx="65" ry="14" fill="none" stroke="#38bdf8" stroke-width="3" opacity="0.8" filter="url(#aiGlow)"/>
+
+  <circle cx="200" cy="170" r="68" fill="url(#aiOrbGrad)" filter="url(#aiGlow)"/>
+
+  <path d="M165,170 Q180,140 205,160 T235,175" fill="none" stroke="#ffffff" stroke-width="4" opacity="0.8" stroke-linecap="round"/>
+  <path d="M175,185 Q200,200 220,180 T240,150" fill="none" stroke="#fbcfe8" stroke-width="3" opacity="0.75" stroke-linecap="round"/>
+  <ellipse cx="180" cy="145" rx="10" ry="5" fill="#ffffff" opacity="0.85" transform="rotate(-30 180 145)"/>
+  <circle cx="225" cy="180" r="4" fill="#ffffff" opacity="0.9"/>
+  <circle cx="170" cy="190" r="3" fill="#ffffff" opacity="0.9"/>
+  <circle cx="200" cy="140" r="2.5" fill="#ffffff" opacity="0.95"/>
+
+  <rect x="20" y="20" width="130" height="24" rx="4" fill="rgba(255,255,255,0.15)"/>
+  <text x="85" y="36" font-size="11" font-family="sans-serif" font-weight="bold" fill="#f43f5e" text-anchor="middle">SYNTHETIC / AI</text>
+
+  <text x="200" y="380" font-size="12" font-family="sans-serif" font-weight="600" fill="#94a3b8" text-anchor="middle">Lampa CrystalGlow Orb (Randare AI sintetica)</text>
+</svg>
