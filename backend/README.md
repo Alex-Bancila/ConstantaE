@@ -34,6 +34,7 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `DATABASE_URL` | | Postgres with pgvector |
 | `REDIS_URL` | `redis://localhost:6379` | Redis for the job queue and result storage |
 | `RESULT_TTL_SECONDS` | `86400` | Expiration time for analysis results in Redis (default: 24h) |
+| `IMAGE_CACHE_TTL_SECONDS` | `604800` | Expiration time for cached image detection results (default: 7 days) |
 | `LLM_API_KEY` | | Key for the language model used by the legal report |
 
 ### Redis & Worker
