@@ -1,5 +1,6 @@
 import json
 
+import fakeredis
 import pytest
 from fastapi.testclient import TestClient
 
@@ -14,6 +15,15 @@ def mock_settings(monkeypatch):
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()
+
+
+@pytest.fixture(autouse=True)
+def fake_redis(monkeypatch):
+    server = fakeredis.FakeServer()
+    conn = fakeredis.FakeRedis(server=server)
+    monkeypatch.setattr("app.workers.store.get_redis_connection", lambda: conn)
+    monkeypatch.setattr("app.workers.queue.get_redis_connection", lambda: conn)
+    yield conn
 
 
 @pytest.fixture
