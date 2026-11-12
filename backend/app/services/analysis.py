@@ -3,11 +3,10 @@
 import uuid
 
 from app.ai.rag import generate_report
-from app.ai.vision import detect
 from app.config import get_settings
 from app.schemas import AnalysisResponse, AnalysisStatus, PageData
 from app.services.trust import run_trust_checks
-from app.workers import queue, store
+from app.workers import cache, queue, store
 
 
 def start(page: PageData) -> AnalysisResponse:
@@ -29,11 +28,22 @@ def run(analysis_id: str, page: PageData) -> AnalysisResponse:
     return AnalysisResponse(
         analysis_id=analysis_id,
         status=AnalysisStatus.DONE,
-        images=[detect(url) for url in page.images],
+        images=[cache.detect_with_cache(url) for url in page.images],
         trust=trust,
         legal=generate_report(page, failed_checks),
     )
 
 
 def get(analysis_id: str) -> AnalysisResponse | None:
-    return store.load(analysis_id)
+    result = store.load(analysis_id)
+    if result is None:
+        return None
+
+    if result.status == AnalysisStatus.PENDING and get_settings().async_jobs:
+        job = queue.get_job(analysis_id)
+        if job and job.is_failed:
+            failed = AnalysisResponse(analysis_id=analysis_id, status=AnalysisStatus.FAILED)
+            store.save(failed)
+            return failed
+
+    return result

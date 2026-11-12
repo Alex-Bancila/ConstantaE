@@ -5,6 +5,7 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | Command (from `backend/`) | What it does |
 |---|---|
 | `uvicorn app.main:app --reload` | Runs the API on http://localhost:8000 (docs at `/docs`) |
+| `python -m app.workers.worker` | Runs the background worker for async jobs |
 | `pytest` | Runs the tests |
 | `ruff check .` / `ruff format .` | Lint / format |
 | `python -m app.ai.rag.ingest` | Loads the law texts into the vector database |
@@ -31,5 +32,28 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `AI_MODE` | `mock` | `mock` = fake AI results; `real` = run the real AI code |
 | `ASYNC` | `false` | `true` = send the AI work to the job queue |
 | `DATABASE_URL` | | Postgres with pgvector |
-| `REDIS_URL` | | Redis for the job queue |
+| `REDIS_URL` | `redis://localhost:6379` | Redis for the job queue and result storage |
+| `RESULT_TTL_SECONDS` | `86400` | Expiration time for analysis results in Redis (default: 24h) |
+| `IMAGE_CACHE_TTL_SECONDS` | `604800` | Expiration time for cached image detection results (default: 7 days) |
 | `LLM_API_KEY` | | Key for the language model used by the legal report |
+
+### Redis & Worker
+
+To run background jobs, ensure Redis is running:
+
+```bash
+docker run -d --name redis -p 6379:6379 redis:alpine
+```
+
+Start the worker:
+
+```bash
+python -m app.workers.worker
+```
+
+You can test the queue and worker end-to-end at any time with:
+
+```bash
+python -m app.workers.worker --test
+```
+
