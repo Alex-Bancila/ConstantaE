@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ConstantaE - Demo Test Pages Hub</title>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --slate-50: #f8fafc;
+        --slate-100: #f1f5f9;
+        --slate-200: #e2e8f0;
+        --slate-600: #475569;
+        --slate-800: #1e293b;
+        --slate-900: #0f172a;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--slate-50);
+        color: var(--slate-900);
+        line-height: 1.5;
+        padding: 32px 16px;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      header {
+        margin-bottom: 32px;
+        border-bottom: 2px solid var(--slate-200);
+        padding-bottom: 20px;
+      }
+      h1 { font-size: 28px; font-weight: 800; color: var(--slate-900); }
+      p.subtitle { color: var(--slate-600); margin-top: 6px; font-size: 15px; }
+      .badge-offline {
+        display: inline-block;
+        background: #dcfce7;
+        color: #15803d;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 999px;
+        margin-left: 8px;
+      }
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 24px;
+      }
+      .card {
+        background: #ffffff;
+        border: 1px solid var(--slate-200);
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px -2px rgba(0,0,0,0.08);
+      }
+      .card-tag {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 3px 8px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 12px;
+        width: fit-content;
+      }
+      .tag-legit { background: #dbeafe; color: #1e40af; }
+      .tag-ai { background: #f3e8ff; color: #6b21a8; }
+      .tag-scam { background: #fee2e2; color: #991b1b; }
+      .tag-p2p { background: #ccfbf1; color: #115e59; }
+      .tag-sample { background: #e2e8f0; color: #475569; }
+      .card h2 { font-size: 18px; margin-bottom: 8px; line-height: 1.3; }
+      .card p { font-size: 13px; color: var(--slate-600); margin-bottom: 16px; }
+      .expectations {
+        background: var(--slate-50);
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 12px;
+        margin-bottom: 16px;
+      }
+      .expectations strong { color: var(--slate-800); }
+      .btn-open {
+        background: var(--primary);
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        padding: 10px 16px;
+        border-radius: 6px;
+        display: block;
+      }
+      .btn-open:hover { background: #1d4ed8; }
+      footer {
+        margin-top: 48px;
+        padding-top: 20px;
+        border-top: 1px solid var(--slate-200);
+        font-size: 13px;
+        color: var(--slate-600);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>ConstantaE &middot; Demo Test Pages <span class="badge-offline">Offline Ready</span></h1>
+        <p class="subtitle">
+          Test pages saved offline so the demo never breaks when listings expire or change. Served with <code>python -m http.server 8001 --directory qa/pages</code>.
+        </p>
+      </header>
+
+      <div class="card-grid">
+        <div class="card">
+          <div>
+            <span class="card-tag tag-legit">1. Legitimate Shop (eMAG style)</span>
+            <h2>Espressor De'Longhi Magnifica S</h2>
+            <p>Authorized retailer listing with complete legal disclosures: valid CUI (Dante International S.A.), working ANPC/SOL links, and a 30-day return policy.</p>
+            <div class="expectations">
+              <div><strong>AI Images:</strong> LOW risk (AI &lt; 0.15) &middot; Real photos</div>
+              <div><strong>Seller Trust:</strong> 100/100 (80/100 on http localhost)</div>
+              <div><strong>Legal:</strong> 14-day statutory return + Art. 6 trader compliance</div>
+            </div>
+          </div>
+          <a href="legitimate-shop/product.html" class="btn-open">Open Legitimate Shop &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <span class="card-tag tag-ai">2. AI-Generated Photos</span>
+            <h2>Lampa levitatie CrystalGlow Orb</h2>
+            <p>Formally compliant seller (registered SRL, CUI, ANPC, SOL, return policy), but 100% of the product photos are synthetic AI generations with visual artifacts.</p>
+            <div class="expectations">
+              <div><strong>AI Images:</strong> HIGH risk (AI &gt; 0.85) &middot; Red badges</div>
+              <div><strong>Seller Trust:</strong> 100/100 (80/100 on http localhost)</div>
+              <div><strong>Legal:</strong> Misleading practices warning (Legea 363/2007)</div>
+            </div>
+          </div>
+          <a href="ai-photos/product.html" class="btn-open">Open AI Photos Listing &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <span class="card-tag tag-scam">3. Suspicious Seller (Scam)</span>
+            <h2>iPhone 16 Pro Max - 850 Lei</h2>
+            <p>Scam listing offering high-end tech at an 88% discount, wire transfer only, countdown urgency timer, missing CUI, no ANPC/SOL, and an illegal no-returns clause.</p>
+            <div class="expectations">
+              <div><strong>AI Images:</strong> Promotional stock / urgency overlays</div>
+              <div><strong>Seller Trust:</strong> 0/100 (Critical risk &middot; 0/5 checks passed)</div>
+              <div><strong>Legal:</strong> Void return waiver (OUG 34/2014 Art. 26), Art. 6</div>
+            </div>
+          </div>
+          <a href="suspicious-seller/product.html" class="btn-open">Open Suspicious Seller &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <span class="card-tag tag-p2p">4. Peer-to-Peer (OLX style)</span>
+            <h2>Bicicleta Riverside 500</h2>
+            <p>Classifieds listing by a private individual (persoana fizica) with real smartphone photos. Demonstrates the legal distinction between B2C and C2C transactions.</p>
+            <div class="expectations">
+              <div><strong>AI Images:</strong> LOW risk (AI &lt; 0.10) &middot; Camera photo</div>
+              <div><strong>Seller Trust:</strong> Low / Private Individual (no CUI/ANPC)</div>
+              <div><strong>Legal:</strong> C2C notice (Civil Code warranty, not OUG 34)</div>
+            </div>
+          </div>
+          <a href="marketplace-individual/product.html" class="btn-open">Open Marketplace Listing &rarr;</a>
+        </div>
+
+        <div class="card">
+          <div>
+            <span class="card-tag tag-sample">5. Starter Sample</span>
+            <h2>iPhone 15 Pro, sigilat (Sample)</h2>
+            <p>Original minimal test fixture used for the smoke test.</p>
+            <div class="expectations">
+              <div><strong>AI Images:</strong> 2 images with test badges</div>
+              <div><strong>Seller Trust:</strong> Partial compliance</div>
+            </div>
+          </div>
+          <a href="sample/product.html" class="btn-open">Open Sample Page &rarr;</a>
+        </div>
+      </div>
+
+      <footer>
+        <p><strong>Note on Repository Policy:</strong> Only self-contained, openly licensed, synthetic or self-authored assets are committed to the public git repository. Proprietary full-page snapshots from external live platforms are stored in the team's shared drive.</p>
+      </footer>
+    </div>
+  </body>
+</html>
