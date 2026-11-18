@@ -32,6 +32,12 @@ CHUNK_SIZE = 64 * 1024
 USER_AGENT = "OrderGuard/1.0"
 AI_LABELS = {"ai", "artificial", "fake", "generated", "ai-generated", "ai_generated", "sd"}
 
+# First signal of a result that could not be scored. Callers use these to tell a
+# failure apart from a real 0.0 score (e.g. so it is not cached).
+DOWNLOAD_FAILED_SIGNAL = "Image download failed"
+INVALID_IMAGE_SIGNAL = "Invalid image data"
+FAILURE_SIGNALS: tuple[str, ...] = (DOWNLOAD_FAILED_SIGNAL, INVALID_IMAGE_SIGNAL)
+
 # Minimum AI probability when metadata proves AI generation (C2PA AI marker or AI EXIF Software).
 METADATA_AI_PROOF_MIN_PROBABILITY = 0.95
 
@@ -263,7 +269,7 @@ def _real_detect(image_url: str) -> ImageResult:
         return ImageResult(
             url=image_url,
             ai_probability=0.0,
-            signals=[f"Image download failed: {exc}"],
+            signals=[f"{DOWNLOAD_FAILED_SIGNAL}: {exc}"],
         )
 
     try:
@@ -274,7 +280,7 @@ def _real_detect(image_url: str) -> ImageResult:
         return ImageResult(
             url=image_url,
             ai_probability=0.0,
-            signals=[f"Invalid image data: {exc}"],
+            signals=[f"{INVALID_IMAGE_SIGNAL}: {exc}"],
         )
 
     model_score = round(_score_image(rgb_image), 2)
