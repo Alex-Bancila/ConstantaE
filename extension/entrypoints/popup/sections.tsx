@@ -34,7 +34,7 @@ function citationUrl(link: unknown): string | null {
   if (typeof link !== 'string') return null;
   try {
     const parsed = new URL(link);
-    return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : null;
+    return parsed.protocol === 'https:' ? parsed.href : null;
   } catch {
     return null;
   }

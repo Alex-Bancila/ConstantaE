@@ -35,11 +35,43 @@ try {
   await popup.setViewportSize({ width: 432, height: 900 });
   await popup.goto(`chrome-extension://${extensionId}/popup.html`);
 
-  for (const section of ['AI-generated images', 'Seller trust', 'Your rights']) {
-    await popup.getByText(section).waitFor({ timeout: 15_000 });
-  }
+  // Use the extension's messages so the same selectors work in Romanian and English.
+  const labels = await popup.evaluate(() => ({
+    analysisMode: chrome.i18n.getMessage('analysisMode'),
+    analyzeCurrentPage: chrome.i18n.getMessage('analyzeCurrentPage'),
+    analysisOverview: chrome.i18n.getMessage('analysisOverview'),
+    tabImages: chrome.i18n.getMessage('tabImages'),
+    tabSeller: chrome.i18n.getMessage('tabSeller'),
+    tabLegal: chrome.i18n.getMessage('tabLegal'),
+    imageAnalysis: chrome.i18n.getMessage('imageAnalysis'),
+    sellerTrustCheck: chrome.i18n.getMessage('sellerTrustCheck'),
+    legalReport: chrome.i18n.getMessage('legalReport'),
+    openLegislation: chrome.i18n.getMessage('openLegislation'),
+  }));
+
+  await popup.getByRole('combobox', { name: labels.analysisMode, exact: true }).selectOption('live');
+  await popup.getByRole('button', { name: labels.analyzeCurrentPage, exact: true }).click();
+  await popup.getByRole('heading', { name: labels.analysisOverview, exact: true }).waitFor({ timeout: 75_000 });
+
+  await popup.getByRole('tab', { name: labels.tabImages, exact: true }).click();
+  const imagesPanel = popup.getByRole('tabpanel', { name: labels.tabImages, exact: true });
+  await imagesPanel.getByRole('heading', { name: labels.imageAnalysis, exact: true }).waitFor();
+  assert.equal(await imagesPanel.getByRole('img').count(), 2, 'expected two analyzed product images');
+
+  await popup.getByRole('tab', { name: labels.tabSeller, exact: true }).click();
+  const sellerPanel = popup.getByRole('tabpanel', { name: labels.tabSeller, exact: true });
+  await sellerPanel.getByRole('heading', { name: labels.sellerTrustCheck, exact: true }).waitFor();
+  await sellerPanel.getByText(/^\d+(?:[.,]\d+)?\/100$/).waitFor();
+
+  await popup.getByRole('tab', { name: labels.tabLegal, exact: true }).click();
+  const legalPanel = popup.getByRole('tabpanel', { name: labels.tabLegal, exact: true });
+  await legalPanel.getByRole('heading', { name: labels.legalReport, exact: true }).waitFor();
+  await legalPanel.getByRole('link', { name: labels.openLegislation, exact: true }).first().waitFor();
   await popup.screenshot({ path: path.join(screenshots, 'popup.png'), fullPage: true });
 
+  await shop.waitForFunction(() =>
+    document.getElementById('constantae-badges')?.shadowRoot?.children.length === 2,
+  );
   const badges = await shop.evaluate(() =>
     [...(document.getElementById('constantae-badges')?.shadowRoot?.children ?? [])].map(
       (badge) => badge.textContent,
