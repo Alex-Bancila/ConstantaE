@@ -100,7 +100,14 @@ export function detectReturnPolicy(doc: Document): boolean {
     }
   }
 
-  const bodyText = doc.body?.textContent ?? '';
+  // A sentence that takes the right away ("renunta la orice drept de retur", "nu este
+  // returnabil") mentions returns, but it is the opposite of a return policy.
+  const waiverRegex =
+    /renun[t?]\w*[^.!?]{0,80}\bretur|\bnu\s+(?:este|se)\s+returnabil|f[aa]r[aa]\s+(?:drept\s+de\s+)?retur|nu\s+se\s+accept[aa]\s+retur/i;
+  const bodyText = (doc.body?.textContent ?? '')
+    .split(/[.!?\n]+/)
+    .filter((sentence) => !waiverRegex.test(sentence))
+    .join('.');
   return returnRegex.test(bodyText);
 }
 

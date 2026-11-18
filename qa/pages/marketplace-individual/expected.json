@@ -36,7 +36,7 @@
       "expectedScore": 0,
       "checks": {
         "https": { "passed": false, "note": "Localhost / unencrypted HTTP" },
-        "cui_present": { "passed": false, "note": "Private seller; no company registration number" },
+        "cui_valid": { "passed": false, "note": "Private seller; no company registration number" },
         "anpc_link": { "passed": false, "note": "No ANPC link (not applicable to private individuals)" },
         "sol_link": { "passed": false, "note": "No SOL link (not applicable to private individuals)" },
         "return_policy": { "passed": false, "note": "No 14-day statutory return policy" }

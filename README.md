@@ -119,6 +119,38 @@ python -m http.server 8001 --directory qa/pages/sample
 Go to http://localhost:8001/product.html and click the extension icon. You should
 see the three result sections and an "AI x%" badge on each photo.
 
+## How to run the demo
+
+The demo runs the real AI (`AI_MODE=real`) on the offline pages in `qa/pages`. Setup is
+once; the steps after it are what you do every time.
+
+**Once**
+
+1. `docker compose up -d db redis` (Postgres and Redis).
+2. In `backend/`: `pip install -r requirements-dev.txt -r requirements-vision.txt`.
+3. In `backend/.env`: `AI_MODE=real`, `DATABASE_URL=postgresql://postgres:postgres@localhost:5440/constantae`
+   (the port is 5440, not the 5432 in `.env.example`), and your `LLM_API_KEY`. Without
+   the key the legal report still lists the articles but has no written summary.
+4. Load the laws: `python -m app.ai.rag.ingest` (in `backend/`).
+5. In `extension/`: `npm ci`, then `npm run build`, and load `extension/.output/chrome-mv3`
+   in Chrome (`chrome://extensions`, Developer mode, Load unpacked).
+
+**Every time**
+
+1. Start the backend on your PC (not in Docker: the container can't reach `localhost:8001`):
+   `uvicorn app.main:app` in `backend/`.
+2. Serve the pages: `python -m http.server 8001 --directory qa/pages`.
+3. Warm up the models with one request, for example
+   `node qa/e2e/flow.mjs legitimate-shop`. The first analysis takes about 20 s; later
+   ones take a few seconds ([timings](docs/real-mode-timing.md)). Keep `ASYNC=false`.
+4. Open `http://localhost:8001/<page>/product.html` for `legitimate-shop`, `ai-photos`,
+   `suspicious-seller` or `marketplace-individual`, and click the extension icon.
+   Expected results per page are in [qa/pages/README.md](qa/pages/README.md).
+
+To check all pages without a browser, run `node qa/e2e/flow.mjs`. It prints what each page
+returns and compares it with the page's `expected.json` (exit code 1 if anything differs).
+`http://localhost` fails the HTTPS check, so the HTTPS check fails on every page and its trust score is lower than the
+one in `expected.json`.
 ## Mock mode
 
 Nobody has to wait for anyone else:

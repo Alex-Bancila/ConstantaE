@@ -43,7 +43,7 @@
       "expectedScoreLocalhostHttp": 80,
       "checks": {
         "https": { "passedOnHttps": true, "passedOnLocalhostHttp": false },
-        "cui_present": { "passed": true, "note": "RO14399840 present and valid" },
+        "cui_valid": { "passed": true, "note": "RO14399840 present and valid" },
         "anpc_link": { "passed": true, "note": "Link to anpc.ro present" },
         "sol_link": { "passed": true, "note": "Link to ec.europa.eu/consumers/odr present" },
         "return_policy": { "passed": true, "note": "30-day return policy clearly offered" }
