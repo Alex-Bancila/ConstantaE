@@ -1,0 +1,45 @@
+[
+  {
+    "question": "În cât timp pot returna un produs cumpărat online?",
+    "expected": [{ "law": "OUG 34/2014", "article": "9" }]
+  },
+  {
+    "question": "Magazinul nu mi-a spus nimic despre dreptul de retragere. Mai pot returna produsul după 14 zile?",
+    "expected": [{ "law": "OUG 34/2014", "article": "10" }]
+  },
+  {
+    "question": "În cât timp trebuie să-mi dea magazinul banii înapoi după ce am returnat comanda?",
+    "expected": [{ "law": "OUG 34/2014", "article": "13" }]
+  },
+  {
+    "question": "Cine plătește transportul când trimit înapoi un produs returnat?",
+    "expected": [{ "law": "OUG 34/2014", "article": "14" }]
+  },
+  {
+    "question": "Pot returna un tricou personalizat cu numele meu, făcut la comandă?",
+    "expected": [{ "law": "OUG 34/2014", "article": "16" }]
+  },
+  {
+    "question": "Comanda nu a ajuns nici după o lună. În cât timp este obligat magazinul să livreze?",
+    "expected": [{ "law": "OUG 34/2014", "article": "18" }]
+  },
+  {
+    "question": "Ce date despre firmă trebuie să afișeze un magazin online înainte să plasez comanda?",
+    "expected": [{ "law": "OUG 34/2014", "article": "6" }]
+  },
+  {
+    "question": "Am primit un colet pe care nu l-am comandat și acum mi se cere plata. Trebuie să plătesc?",
+    "expected": [{ "law": "OUG 34/2014", "article": "23" }]
+  },
+  {
+    "question": "Telefonul s-a stricat în perioada de garanție. Ce pot să-i cer vânzătorului?",
+    "expected": [{ "law": "OG 21/1992", "article": "12" }]
+  },
+  {
+    "question": "Magazinul nu afișează clar prețul produsului. Este obligat să-l arate?",
+    "expected": [
+      { "law": "OG 21/1992", "article": "25" },
+      { "law": "OUG 34/2014", "article": "6" }
+    ]
+  }
+]

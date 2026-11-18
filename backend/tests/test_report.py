@@ -73,7 +73,7 @@ def test_unknown_check_becomes_a_question_about_its_message():
 
 
 def test_prompt_numbers_articles_and_only_includes_check_messages():
-    prompt = build_prompt([NO_CUI], [ART_9, OG_ART_3])
+    prompt = build_prompt([NO_CUI.message], [ART_9, OG_ART_3])
 
     assert "- No CUI was found on the page." in prompt
     assert "[1] OUG 34/2014, art. 9\nDreptul de retragere: 14 zile." in prompt
