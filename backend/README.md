@@ -33,4 +33,5 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `ASYNC` | `false` | `true` = send the AI work to the job queue |
 | `DATABASE_URL` | | Postgres with pgvector |
 | `REDIS_URL` | | Redis for the job queue |
-| `LLM_API_KEY` | | Key for the language model used by the legal report |
+| `LLM_API_KEY` | | Anthropic API key for the legal report (`AI_MODE=real`) |
+| `LLM_MODEL` | `claude-opus-5-5` | Claude model that writes the legal report summary |
