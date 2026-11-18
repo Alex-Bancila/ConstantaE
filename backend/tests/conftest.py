@@ -13,6 +13,7 @@ from app.main import app
 def mock_settings(monkeypatch):
     monkeypatch.setenv("AI_MODE", "mock")
     monkeypatch.setenv("ASYNC", "false")
+    monkeypatch.setenv("DATABASE_URL", "")  # tests never need Postgres, even if .env sets it
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()

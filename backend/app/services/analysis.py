@@ -2,6 +2,7 @@
 
 import uuid
 
+from app import db
 from app.ai.rag import generate_report
 from app.config import get_settings
 from app.schemas import AnalysisResponse, AnalysisStatus, PageData
@@ -25,13 +26,15 @@ def start(page: PageData) -> AnalysisResponse:
 def run(analysis_id: str, page: PageData) -> AnalysisResponse:
     trust = run_trust_checks(page)
     failed_checks = [check for check in trust.checks if not check.passed]
-    return AnalysisResponse(
+    result = AnalysisResponse(
         analysis_id=analysis_id,
         status=AnalysisStatus.DONE,
         images=[cache.detect_with_cache(url) for url in page.images],
         trust=trust,
         legal=generate_report(page, failed_checks),
     )
+    db.record(result, page)
+    return result
 
 
 def get(analysis_id: str) -> AnalysisResponse | None:

@@ -8,6 +8,8 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `python -m app.workers.worker` | Runs the background worker for async jobs |
 | `pytest` | Runs the tests |
 | `ruff check .` / `ruff format .` | Lint / format |
+| `python -m app.db` | Creates the `analyses` and `image_results` tables (run once) |
+| `TEST_DATABASE_URL=<url> pytest tests/test_db.py` | Also checks saving against a real Postgres |
 | `python -m app.ai.rag.ingest` | Loads the law texts into the vector database |
 | `RAG_TEST_DATABASE_URL=<url> pytest tests/test_retrieval.py` | Also checks the search against a real, ingested database |
 | `python -m app.ai.rag.evaluate` | Scores the legal report on the 10 questions in `tests/data/legal_questions.json` (`--retrieval-only` skips the LLM) |
@@ -60,3 +62,9 @@ You can test the queue and worker end-to-end at any time with:
 python -m app.workers.worker --test
 ```
 
+
+## Storing analyses in Postgres
+
+Set `DATABASE_URL` and run `python -m app.db` once (with Docker: `docker compose exec api python -m app.db`). It is safe to run again. Every finished analysis is then saved in two tables: `analyses` (page URL and title, status, trust score, trust checks and legal report as JSON) and `image_results` (one row per image, deleted together with its analysis).
+
+Redis (`app/workers/store.py`) stays the store the API reads from: it holds pending, failed and finished results and expires them. Postgres is the permanent history, written by `analysis.run` and not read by the API yet. Without `DATABASE_URL` nothing is saved, and a database error is logged without failing the analysis.
