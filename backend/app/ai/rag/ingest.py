@@ -1,9 +1,6 @@
-"""Loads law texts into article records (owner: Lucas).
+"""Loads the law texts, embeds each article and stores it in Postgres + pgvector (owner: Lucas).
 
 Run from the backend folder:  python -m app.ai.rag.ingest
-
-TODO(Lucas):
-- create embeddings (BGE-M3 or multilingual-e5) and store them in Postgres + pgvector
 """
 
 from pathlib import Path

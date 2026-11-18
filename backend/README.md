@@ -36,7 +36,8 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `REDIS_URL` | `redis://localhost:6379` | Redis for the job queue and result storage |
 | `RESULT_TTL_SECONDS` | `86400` | Expiration time for analysis results in Redis (default: 24h) |
 | `IMAGE_CACHE_TTL_SECONDS` | `604800` | Expiration time for cached image detection results (default: 7 days) |
-| `LLM_API_KEY` | | Key for the language model used by the legal report |
+| `LLM_API_KEY` | | Anthropic API key for the legal report (`AI_MODE=real`) |
+| `LLM_MODEL` | `claude-sonnet-4-6` | Claude model that writes the legal report summary |
 
 ### Redis & Worker
 
