@@ -1,6 +1,7 @@
 """Looks up a company in ANAF's free public VAT register (owner: David).
 
-Docs: https://webservicesp.anaf.ro/PlatitorTvaRest/api/v9/ws/tva
+Docs: https://static.anaf.ro/static/10/Anaf/Informatii_R/Servicii_web/doc_WS_V9.txt
+ANAF allows at most 1 request per second per client.
 Results are cached in Redis so the same CUI is not looked up twice. Every failure
 (network, timeout, bad response, Redis down) is reported as "unavailable", so the
 caller can skip the check instead of failing it.
