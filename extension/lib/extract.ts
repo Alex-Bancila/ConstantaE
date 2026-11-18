@@ -8,7 +8,6 @@ import type { PageData } from './types';
  * generic data is missing.
  *
  * TODO(Ștefana):
- * - seller name and CUI (a regex near "CUI", "CIF", "Cod fiscal")
  * - detect a return policy link
  */
 export function extractPage(doc: Document, url: string): PageData {
@@ -58,6 +57,21 @@ export function extractPage(doc: Document, url: string): PageData {
     images = largeImages(doc);
   }
 
+  // 4. Seller: name (OLX person/company or eMAG vendor) and CUI
+  let sellerName: string | null = null;
+  if (site === 'olx') {
+    sellerName = extractOlxSellerName(doc);
+  } else if (site === 'emag') {
+    sellerName = extractEmagSellerName(doc, offer);
+  } else {
+    const s = offer?.seller;
+    if (isObject(s) && isString(s.name)) {
+      sellerName = s.name.trim();
+    }
+  }
+
+  const cui = extractCui(doc.body?.textContent ?? '');
+
   return {
     url,
     site,
@@ -65,13 +79,58 @@ export function extractPage(doc: Document, url: string): PageData {
     price,
     currency,
     images: images.map((src) => absolute(src, doc)),
-    seller: { name: null, cui: null },
+    seller: { name: sellerName, cui },
     legalLinks: {
       anpc: hasLinkTo(doc, 'anpc.ro'),
       sol: hasLinkTo(doc, 'ec.europa.eu/consumers/odr'),
     },
     hasReturnPolicy: false,
   };
+}
+
+export function extractCui(text: string): string | null {
+  const match = text.match(
+    /(?:cod\s+unic\s+de\s+[iî]nregistrare|cod\s+fiscal|c\.?u\.?i\.?|c\.?i\.?f\.?)[:\s\-]+((?:RO\s*)?\d{2,10})\b/i,
+  );
+  if (!match || !match[1]) return null;
+  return match[1].replace(/\s+/g, '').toUpperCase();
+}
+
+function extractOlxSellerName(doc: Document): string | null {
+  const userCard = doc.querySelector<HTMLElement>(
+    '[data-testid="user-profile-link"], [data-cy="seller-card"], [data-testid="seller-card"], [data-testid="ad-contact-profile-card"]',
+  );
+  if (userCard) {
+    const heading = userCard.querySelector<HTMLElement>('h1, h2, h3, h4, h5, [class*="name"]');
+    const name = (heading?.textContent || userCard.textContent)?.trim();
+    if (name) return name;
+  }
+  const userLink = doc.querySelector<HTMLElement>('a[href*="/d/user/"], a[href*="/oferte/user/"]');
+  return userLink?.textContent?.trim() || null;
+}
+
+function extractEmagSellerName(doc: Document, offer?: JsonObject): string | null {
+  const sellerObj = offer?.seller;
+  if (isObject(sellerObj) && isString(sellerObj.name)) {
+    return sellerObj.name.trim();
+  }
+
+  const vendorLink = doc.querySelector<HTMLElement>(
+    '.product-vendor-details a, [data-test="seller-name"], .seller-name, a[href*="/magazin/"], a[href*="/seller/"]',
+  );
+  if (vendorLink?.textContent?.trim()) {
+    return vendorLink.textContent.trim();
+  }
+
+  const vendorEl = doc.querySelector<HTMLElement>('.product-vendor-details, [class*="vendor"]');
+  if (vendorEl?.textContent) {
+    const match = vendorEl.textContent.match(/v[aâ]ndut\s+(?:[sș]i\s+livrat\s+)?de[:\s]+([^,\n<]+)/i);
+    if (match && match[1]) {
+      return match[1].trim();
+    }
+  }
+
+  return null;
 }
 
 function emagTitle(doc: Document): string | null {
