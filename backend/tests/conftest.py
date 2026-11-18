@@ -22,6 +22,7 @@ def fake_redis(monkeypatch):
     server = fakeredis.FakeServer()
     conn = fakeredis.FakeRedis(server=server)
     monkeypatch.setattr("app.workers.store.get_redis_connection", lambda: conn)
+    monkeypatch.setattr("app.workers.queue.get_redis_connection", lambda: conn)
     yield conn
 
 

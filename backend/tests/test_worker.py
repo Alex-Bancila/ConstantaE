@@ -6,10 +6,10 @@ from app.config import get_settings
 from app.schemas import PageData
 from app.workers import store
 from app.workers.queue import (
+    create_redis_connection,
     enqueue,
     enqueue_test_job,
     get_queue,
-    get_redis_connection,
     run_test_job,
 )
 from app.workers.worker import (
@@ -22,7 +22,7 @@ from app.workers.worker import (
 def test_redis_connection_from_settings(monkeypatch):
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379/3")
     get_settings.cache_clear()
-    conn = get_redis_connection()
+    conn = create_redis_connection()
     assert conn.connection_pool.connection_kwargs.get("db") == 3
 
 

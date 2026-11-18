@@ -36,4 +36,15 @@ def run(analysis_id: str, page: PageData) -> AnalysisResponse:
 
 
 def get(analysis_id: str) -> AnalysisResponse | None:
-    return store.load(analysis_id)
+    result = store.load(analysis_id)
+    if result is None:
+        return None
+
+    if result.status == AnalysisStatus.PENDING and get_settings().async_jobs:
+        job = queue.get_job(analysis_id)
+        if job and job.is_failed:
+            failed = AnalysisResponse(analysis_id=analysis_id, status=AnalysisStatus.FAILED)
+            store.save(failed)
+            return failed
+
+    return result
