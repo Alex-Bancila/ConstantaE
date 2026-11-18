@@ -26,5 +26,5 @@ Open: `http://localhost:8001/product.html`
 ## Assets
 
 - `photo1.png`: Daylight outdoor photograph of a hybrid bicycle on pavement.
-- `photo2.png`: Macro close-up of 9-speed cassette and rear derailleur with authentic chain grease/wear.
+- `photo2.png`: Real smartphone photo of the whole bicycle, side view, indoors.
 - `expected.json`: Machine-readable contract test data.
