@@ -17,3 +17,7 @@ Source: [legislatie.just.ro](https://legislatie.just.ro/). Then run, from the
 ```bash
 python -m app.ai.rag.ingest
 ```
+
+The ingestion command uses `intfloat/multilingual-e5-small` to create
+multilingual article embeddings and stores them in PostgreSQL with pgvector.
+Set `DATABASE_URL` before running it.
