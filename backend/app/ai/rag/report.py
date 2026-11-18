@@ -113,17 +113,15 @@ def gather_articles(
     return articles
 
 
-def build_prompt(failed_checks: Sequence[TrustCheck], articles: Sequence[LawArticle]) -> str:
-    # Only our own check messages go in, never text scraped from the page,
-    # so the seller cannot steer the summary.
-    problems = "\n".join(f"- {check.message}" for check in failed_checks) or (
+def build_prompt(problems: Sequence[str], articles: Sequence[LawArticle]) -> str:
+    problem_list = "\n".join(f"- {problem}" for problem in problems) or (
         "- Nicio problemă găsită; explică doar dreptul de retragere."
     )
     sources = "\n\n".join(
         f"[{index}] {article.law_name}, art. {article.article_number}\n{article.text}"
         for index, article in enumerate(articles, start=1)
     )
-    return f"Probleme găsite pe pagină:\n{problems}\n\nArticole de lege:\n\n{sources}"
+    return f"Probleme găsite pe pagină:\n{problem_list}\n\nArticole de lege:\n\n{sources}"
 
 
 def _label(article: LawArticle) -> str:
@@ -173,12 +171,32 @@ def build_report(
     search: Callable[[str, int], Sequence[RetrievedArticle]],
     write_summary: WriteSummary,
 ) -> LegalReport:
-    articles = gather_articles(build_questions(failed_checks), search)
+    # Only our own check messages reach the LLM, never text scraped from the page,
+    # so the seller cannot steer the summary.
+    return answer_questions(
+        build_questions(failed_checks),
+        problems=[check.message for check in failed_checks],
+        search=search,
+        write_summary=write_summary,
+    )
+
+
+def answer_questions(
+    questions: Sequence[str],
+    problems: Sequence[str],
+    search: Callable[[str, int], Sequence[RetrievedArticle]],
+    write_summary: WriteSummary,
+) -> LegalReport:
+    """Retrieve articles for the questions and summarize them for the given problems.
+
+    build_report() uses it for a page; the accuracy script uses it for one question.
+    """
+    articles = gather_articles(questions, search)
     if not articles:
         return LegalReport(summary=NOTHING_FOUND_SUMMARY, citations=[])
 
     try:
-        raw_summary = write_summary(SYSTEM_PROMPT, build_prompt(failed_checks, articles))
+        raw_summary = write_summary(SYSTEM_PROMPT, build_prompt(problems, articles))
     except Exception:
         # The images and trust checks are still worth showing if the LLM is down.
         logger.exception("Legal report summary failed")
