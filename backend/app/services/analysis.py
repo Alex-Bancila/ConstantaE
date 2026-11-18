@@ -14,6 +14,7 @@ from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 
+from app import db
 from app.ai.rag import generate_report
 from app.ai.vision.detector import FAILURE_SIGNALS
 from app.config import get_settings
@@ -107,6 +108,7 @@ def run_timed(analysis_id: str, page: PageData) -> tuple[AnalysisResponse, Stage
         trust=trust,
         legal=legal,
     )
+    db.record(result, page)
     return result, timings
 
 
