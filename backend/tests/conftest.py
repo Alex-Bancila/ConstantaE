@@ -3,6 +3,7 @@ import json
 import fakeredis
 import pytest
 from fastapi.testclient import TestClient
+from rq.worker import SimpleWorker
 
 from app.config import REPO_ROOT, get_settings
 from app.main import app
@@ -24,6 +25,10 @@ def fake_redis(monkeypatch):
     monkeypatch.setattr("app.workers.store.get_redis_connection", lambda: conn)
     monkeypatch.setattr("app.workers.queue.get_redis_connection", lambda: conn)
     monkeypatch.setattr("app.workers.cache.get_redis_connection", lambda: conn)
+    # On Linux the default RQ Worker runs each job in a forked child process, which
+    # writes to its own copy of the in-memory fake Redis. SimpleWorker runs jobs in
+    # this process, so the tests see the results on every platform.
+    monkeypatch.setattr("app.workers.worker.get_worker_class", lambda: SimpleWorker)
     yield conn
 
 
