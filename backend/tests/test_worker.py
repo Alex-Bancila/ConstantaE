@@ -1,7 +1,5 @@
 import sys
 
-import fakeredis
-import pytest
 from rq.worker import SimpleWorker, Worker
 
 from app.config import get_settings
@@ -19,12 +17,6 @@ from app.workers.worker import (
     get_worker_class,
     run_test_end_to_end,
 )
-
-
-@pytest.fixture
-def fake_redis():
-    server = fakeredis.FakeServer()
-    return fakeredis.FakeRedis(server=server)
 
 
 def test_redis_connection_from_settings(monkeypatch):
