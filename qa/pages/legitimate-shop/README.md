@@ -25,7 +25,7 @@ Open: `http://localhost:8001/product.html`
 
 ## Assets
 
-- `photo1.jpg`: Front view showing dual coffee spouts, control dial, espresso cups, and latte glass.
+- `photo1.png`: Front view of the machine showing the control dial, the dual coffee spouts and the drip tray.
 - `photo2.png`: Detail view highlighting manual milk frothing wand.
 - `photo3.png`: Detail view showing bean hopper and coffee beans.
 - `expected.json`: Machine-readable contract test data.

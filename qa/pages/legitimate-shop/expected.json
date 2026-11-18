@@ -5,7 +5,7 @@
     "title": "Espressor automat De'Longhi Magnifica S ECAM 22.110.B, 1450W, 15 bar, 1.8 l, Negru",
     "price": 1549.99,
     "currency": "RON",
-    "images": ["photo1.jpg", "photo2.png", "photo3.png"],
+    "images": ["photo1.png", "photo2.png", "photo3.png"],
     "seller": {
       "name": "Dante International S.A.",
       "cui": "RO14399840"
@@ -20,7 +20,7 @@
     "status": "done",
     "images": [
       {
-        "url": "photo1.jpg",
+        "url": "photo1.png",
         "expectedRisk": "low",
         "aiProbabilityRange": [0.0, 0.15],
         "signals": ["Authentic camera optics", "Camera EXIF data present"]
