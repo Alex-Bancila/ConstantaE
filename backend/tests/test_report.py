@@ -240,3 +240,16 @@ def test_write_summary_raises_when_the_model_refuses(monkeypatch):
 
     with pytest.raises(llm.SummaryError, match="declined"):
         llm.write_summary("system", "user")
+
+
+def test_withdrawal_question_gets_more_articles_than_the_others():
+    search = search_returning(ART_9, ART_6, OG_ART_3)
+
+    build_report([NO_CUI], search=search, write_summary=writer_returning("Ai 14 zile [1]."))
+
+    sizes = dict(search.calls)
+    assert sizes[WITHDRAWAL_QUESTION] == report.WITHDRAWAL_ARTICLES
+    assert report.WITHDRAWAL_ARTICLES > report.ARTICLES_PER_QUESTION
+    assert all(
+        k == report.ARTICLES_PER_QUESTION for q, k in search.calls if q != WITHDRAWAL_QUESTION
+    )
