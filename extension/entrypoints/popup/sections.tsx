@@ -138,6 +138,7 @@ export function AnalysisResults({ analysis }: { analysis: AnalysisResponse }) {
   const [activeTab, setActiveTab] = useState<typeof resultTabs[number]['id']>('images');
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const images = analysis.images ?? [];
+  const isEmpty = images.length === 0 && analysis.trust === null && analysis.legal === null;
   const highestProbability = images.length ? images.reduce((highest, image) => (
     Math.max(highest, Math.round(Math.max(0, Math.min(1, image.aiProbability)) * 100))
   ), 0) : null;
@@ -163,7 +164,7 @@ export function AnalysisResults({ analysis }: { analysis: AnalysisResponse }) {
     <section className="analysis-results" aria-labelledby="overview-heading">
       <div className="overview-heading flex items-center justify-between gap-3">
         <h2 id="overview-heading">{t('analysisOverview')}</h2>
-        <p className="completion-status flex items-center gap-1" role="status"><Icon name="check" size={14}/>{t('complete')}</p>
+        <p className={`${isEmpty ? 'muted' : 'completion-status'} flex items-center gap-1`} role="status">{!isEmpty && <Icon name="check" size={14}/>}{t(isEmpty ? 'noAnalysisResults' : 'complete')}</p>
       </div>
       <dl className="overview-metrics grid grid-cols-3 gap-3">
         <div><dt>{t('highestAiEstimate')}</dt><dd>{highestProbability == null ? t('notAvailable') : `${formatNumber(highestProbability)}%`}</dd></div>

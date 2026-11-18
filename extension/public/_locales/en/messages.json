@@ -201,6 +201,9 @@
   "complete": {
     "message": "Complete"
   },
+  "noAnalysisResults": {
+    "message": "No results available"
+  },
   "highestAiEstimate": {
     "message": "Highest AI estimate"
   },
