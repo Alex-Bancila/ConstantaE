@@ -14,6 +14,7 @@ def mock_settings(monkeypatch):
     monkeypatch.setenv("AI_MODE", "mock")
     monkeypatch.setenv("ASYNC", "false")
     monkeypatch.setenv("DATABASE_URL", "")  # tests never need Postgres, even if .env sets it
+    monkeypatch.setenv("ANAF_CHECK", "false")  # tests never call the real ANAF API
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()
@@ -26,6 +27,7 @@ def fake_redis(monkeypatch):
     monkeypatch.setattr("app.workers.store.get_redis_connection", lambda: conn)
     monkeypatch.setattr("app.workers.queue.get_redis_connection", lambda: conn)
     monkeypatch.setattr("app.workers.cache.get_redis_connection", lambda: conn)
+    monkeypatch.setattr("app.services.anaf.get_redis_connection", lambda: conn)
     # On Linux the default RQ Worker runs each job in a forked child process, which
     # writes to its own copy of the in-memory fake Redis. SimpleWorker runs jobs in
     # this process, so the tests see the results on every platform.

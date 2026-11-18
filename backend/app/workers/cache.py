@@ -78,8 +78,13 @@ def detect_with_cache(
     detector: Callable[[str], ImageResult] | None = None,
     ttl: int | None = None,
     connection: Redis | None = None,
+    should_cache: Callable[[ImageResult], bool] | None = None,
 ) -> ImageResult:
-    """Returns the cached ImageResult or runs the detector and caches the result."""
+    """Returns the cached ImageResult or runs the detector and caches the result.
+
+    `should_cache` can veto caching a result, e.g. a failed download that should be
+    retried on the next analysis instead of being served for days.
+    """
     cached = get(image_url, connection=connection)
     if cached is not None:
         return cached
@@ -90,5 +95,6 @@ def detect_with_cache(
         detector = default_detect
 
     result = detector(image_url)
-    set(image_url, result, ttl=ttl, connection=connection)
+    if should_cache is None or should_cache(result):
+        set(image_url, result, ttl=ttl, connection=connection)
     return result

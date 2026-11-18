@@ -88,6 +88,20 @@ def test_detect_with_cache_avoids_running_detector(fake_redis):
     assert res2.signals == ["mock-detector"]
 
 
+def test_detect_with_cache_skips_results_the_caller_vetoes(fake_redis):
+    url = "https://example.com/unreachable.jpg"
+
+    def failing_detector(image_url: str) -> ImageResult:
+        return ImageResult(url=image_url, ai_probability=0.0, signals=["download failed"])
+
+    result = cache.detect_with_cache(
+        url, detector=failing_detector, connection=fake_redis, should_cache=lambda r: False
+    )
+
+    assert result.signals == ["download failed"]
+    assert cache.get(url, connection=fake_redis) is None
+
+
 def test_analysing_same_page_twice_does_not_run_model_again(
     client, fake_redis, monkeypatch, example_page
 ):

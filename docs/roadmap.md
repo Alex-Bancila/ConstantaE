@@ -28,7 +28,7 @@ User accounts are left out on purpose: they bring the least value to the user ri
 - [ ] CUI check-digit validation (and optionally the ANAF public API)
 - [ ] Suspicious-price check
 - [ ] Database tables for analyses and image results (Postgres)
-- [ ] Connect Lucas's and Rareș's real functions and keep the tests green
+- [x] Connect Lucas's and Rareș's real functions and keep the tests green ([`real-mode-timing.md`](real-mode-timing.md))
 - [ ] **Integration owner:** run the full flow on the demo pages and fix what doesn't fit
 
 ## Marius: Async workers
