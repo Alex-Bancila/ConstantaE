@@ -1,7 +1,18 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.analyze import router as analyze_router
+
+# Uvicorn only sets up its own loggers, so without a handler the app's INFO lines
+# (such as the time each analysis took) would never be printed.
+_app_logger = logging.getLogger("app")
+if not _app_logger.handlers:
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(logging.Formatter("%(levelname)s:     %(name)s: %(message)s"))
+    _app_logger.addHandler(_handler)
+    _app_logger.setLevel(logging.INFO)
 
 app = FastAPI(title="ConstantaE API", version="0.1.0")
 

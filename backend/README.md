@@ -11,6 +11,30 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `python -m app.ai.rag.ingest` | Loads the law texts into the vector database |
 | `RAG_TEST_DATABASE_URL=<url> pytest tests/test_retrieval.py` | Also checks the search against a real, ingested database |
 | `python -m app.ai.rag.evaluate` | Scores the legal report on the 10 questions in `tests/data/legal_questions.json` (`--retrieval-only` skips the LLM) |
+| `python scripts/measure_analysis.py <page>` | Times one analysis of a `qa/pages` demo page with `AI_MODE=real` (see [real-mode-timing.md](../docs/real-mode-timing.md)) |
+| `REAL_AI_E2E=1 pytest tests/test_real_e2e.py -s` | Runs `AI_MODE=real` end to end on two demo pages (needs everything in the checklist below) |
+
+## Running with `AI_MODE=real`
+
+The default `AI_MODE=mock` needs none of this. For the real AI:
+
+1. `pip install -r requirements-vision.txt` (PyTorch, for the image detector).
+2. Postgres with pgvector (`docker compose up db`) and `DATABASE_URL` in `.env`.
+   With Docker Compose from your PC that is `postgresql://postgres:postgres@localhost:5440/constantae`.
+3. Load the laws once: `python -m app.ai.rag.ingest`.
+4. `LLM_API_KEY` (and optionally `LLM_MODEL`) in `.env`.
+5. Redis (`docker compose up redis`): the result store and the image cache use it,
+   also with `ASYNC=false`.
+6. `AI_MODE=real` in `.env`, then `uvicorn app.main:app`.
+
+The first analysis downloads and loads the models, so it is much slower than the next
+ones. Each analysis logs how long its parts took. If one part fails (an image that
+can't be downloaded, Postgres down, the LLM unavailable), the error is logged and the
+other parts are still returned.
+
+> **Docker and local demo pages:** inside the `api` container, `localhost` is the
+> container itself, so it can't download images from `http://localhost:8001/...`.
+> For the offline demo pages, run the backend on your PC instead.
 
 ## Files
 
