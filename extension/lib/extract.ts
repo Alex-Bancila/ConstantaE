@@ -8,7 +8,6 @@ import type { PageData } from './types';
  * generic data is missing.
  *
  * TODO(Ștefana):
- * - site-specific selectors for eMAG where the generic data is missing
  * - seller name and CUI (a regex near "CUI", "CIF", "Cod fiscal")
  * - detect a return policy link
  */
@@ -21,17 +20,23 @@ export function extractPage(doc: Document, url: string): PageData {
   const title =
     asString(product?.name) ??
     meta(doc, 'og:title') ??
-    (site === 'olx' ? olxTitle(doc) : null) ??
+    (site === 'olx' ? olxTitle(doc) : site === 'emag' ? emagTitle(doc) : null) ??
     (doc.title || null);
 
   // 2. Price & Currency: generic JSON-LD offer -> generic Open Graph -> site-specific selector
   let price = toNumber(offer?.price ?? meta(doc, 'product:price:amount'));
   let currency = asString(offer?.priceCurrency) ?? meta(doc, 'product:price:currency');
 
-  if ((price === null || currency === null) && site === 'olx') {
-    const olx = olxPrice(doc);
-    if (price === null) price = olx.price;
-    if (currency === null) currency = olx.currency;
+  if (price === null || currency === null) {
+    if (site === 'olx') {
+      const olx = olxPrice(doc);
+      if (price === null) price = olx.price;
+      if (currency === null) currency = olx.currency;
+    } else if (site === 'emag') {
+      const emag = emagPrice(doc);
+      if (price === null) price = emag.price;
+      if (currency === null) currency = emag.currency;
+    }
   }
 
   // 3. Images: generic JSON-LD image list (when multiple) -> site-specific gallery -> og:image / largeImages
@@ -42,6 +47,9 @@ export function extractPage(doc: Document, url: string): PageData {
   } else if (site === 'olx') {
     const olxImgs = olxImages(doc);
     images = olxImgs.length > 0 ? olxImgs : unique([...jsonLdImages, ...optional(meta(doc, 'og:image'))]);
+  } else if (site === 'emag') {
+    const emagImgs = emagImages(doc);
+    images = emagImgs.length > 0 ? emagImgs : unique([...jsonLdImages, ...optional(meta(doc, 'og:image'))]);
   } else {
     images = unique([...jsonLdImages, ...optional(meta(doc, 'og:image'))]);
   }
@@ -64,6 +72,61 @@ export function extractPage(doc: Document, url: string): PageData {
     },
     hasReturnPolicy: false,
   };
+}
+
+function emagTitle(doc: Document): string | null {
+  const element = doc.querySelector<HTMLElement>('h1.page-title, [class*="page-title"], h1');
+  const text = element?.textContent?.trim();
+  return text || null;
+}
+
+function emagPrice(doc: Document): { price: number | null; currency: string | null } {
+  const element = doc.querySelector<HTMLElement>('.product-new-price, [data-test="product-price"]');
+  if (!element) return { price: null, currency: null };
+
+  const sup = element.querySelector('sup');
+  if (sup && sup.textContent) {
+    const decimals = sup.textContent.trim();
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.querySelector('sup')?.remove();
+    const mainText = clone.textContent?.trim() ?? '';
+    return parsePriceText(`${mainText.replace(/lei/i, '')},${decimals} Lei`);
+  }
+  return parsePriceText(element.textContent ?? '');
+}
+
+function emagImages(doc: Document): string[] {
+  const selectors = [
+    '.product-gallery a.product-gallery-image',
+    '.product-gallery-thumbnails a',
+    '.product-gallery-thumbnails img',
+    '.product-gallery img',
+    '[data-ph-element="gallery"] img',
+  ].join(', ');
+
+  const elements = doc.querySelectorAll<HTMLElement>(selectors);
+  const urls: string[] = [];
+
+  for (const el of elements) {
+    const tag = el.tagName.toLowerCase();
+    if (tag === 'a') {
+      const href = el.getAttribute('href') || (el as HTMLAnchorElement).href;
+      if (href && /\.(jpe?g|png|webp|avif)/i.test(href)) {
+        urls.push(href);
+      }
+    } else if (tag === 'img') {
+      const src =
+        el.getAttribute('src') ||
+        (el as HTMLImageElement).currentSrc ||
+        (el as HTMLImageElement).src ||
+        el.getAttribute('data-src');
+      if (src && !src.startsWith('data:image/svg')) {
+        urls.push(src);
+      }
+    }
+  }
+
+  return unique(urls);
 }
 
 function olxTitle(doc: Document): string | null {
@@ -204,8 +267,12 @@ function detectSite(url: string, doc?: Document): string {
       if (parsed.pathname.includes('emag')) return 'emag';
       if (doc) {
         if (doc.title?.toLowerCase().includes('olx.ro')) return 'olx';
+        if (doc.title?.toLowerCase().includes('emag.ro')) return 'emag';
         if (doc.querySelector('[data-cy="ad_title"], [data-testid="ad-price-container"]')) {
           return 'olx';
+        }
+        if (doc.querySelector('.product-gallery, .product-new-price, .page-title')) {
+          return 'emag';
         }
       }
     }
@@ -216,7 +283,10 @@ function detectSite(url: string, doc?: Document): string {
 }
 
 function hasLinkTo(doc: Document, target: string): boolean {
-  return [...doc.links].some((link) => link.href.includes(target));
+  return [...doc.links].some((link) => {
+    const href = link.href || link.getAttribute('href') || '';
+    return href.includes(target);
+  });
 }
 
 function meta(doc: Document, property: string): string | null {
