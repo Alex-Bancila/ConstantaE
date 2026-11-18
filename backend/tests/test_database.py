@@ -40,6 +40,17 @@ def test_schema_creates_vector_table_with_unique_article_key():
     assert connection.commits == 1
 
 
+def test_schema_adds_romanian_full_text_column_and_index():
+    connection = FakeConnection()
+
+    ensure_schema(connection, dimensions=384)
+
+    queries = [query for query, _ in connection.cursor_instance.queries]
+    assert "ADD COLUMN IF NOT EXISTS search_vector" in queries[2]
+    assert "to_tsvector('romanian', text)" in queries[2]
+    assert "USING GIN (search_vector)" in queries[3]
+
+
 def test_upsert_updates_existing_article_instead_of_duplicating_it():
     connection = FakeConnection()
     article = LawArticle(

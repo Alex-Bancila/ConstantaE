@@ -11,6 +11,11 @@ def build_passages(articles: Sequence[LawArticle]) -> list[str]:
     return [f"passage: {article.text}" for article in articles]
 
 
+def build_query(question: str) -> str:
+    # e5 models are trained with "query: " on questions and "passage: " on documents.
+    return f"query: {question}"
+
+
 class ArticleEmbedder:
     def __init__(self, model_name: str = MODEL_NAME) -> None:
         try:
@@ -34,3 +39,12 @@ class ArticleEmbedder:
             show_progress_bar=False,
         )
         return [vector.tolist() for vector in vectors]
+
+    def embed_query(self, question: str) -> list[float]:
+        vector = self._model.encode(
+            build_query(question),
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+        )
+        return vector.tolist()

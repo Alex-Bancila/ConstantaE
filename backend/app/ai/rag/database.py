@@ -5,6 +5,9 @@ from typing import Any
 
 from app.ai.rag.articles import LawArticle
 
+# Postgres ships a Romanian Snowball stemmer, so "retragere" and "retragerea" match.
+FULL_TEXT_CONFIG = "romanian"
+
 
 def connect_database(database_url: str) -> Any:
     try:
@@ -36,6 +39,19 @@ def ensure_schema(connection: Any, dimensions: int) -> None:
                 UNIQUE (law, article)
             )
             """
+        )
+        # Full-text half of the hybrid search. A generated column stays in sync with
+        # `text` on every upsert; ADD COLUMN IF NOT EXISTS upgrades tables created
+        # before this column existed.
+        cursor.execute(
+            f"""
+            ALTER TABLE law_chunks ADD COLUMN IF NOT EXISTS search_vector tsvector
+            GENERATED ALWAYS AS (to_tsvector('{FULL_TEXT_CONFIG}', text)) STORED
+            """
+        )
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS law_chunks_search_idx "
+            "ON law_chunks USING GIN (search_vector)"
         )
     connection.commit()
 
