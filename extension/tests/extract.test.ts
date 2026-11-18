@@ -4,7 +4,7 @@ import path from 'node:path';
 import test, { describe } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { JSDOM } from 'jsdom';
-import { extractCui, extractPage, parsePriceText } from '../lib/extract.ts';
+import { detectReturnPolicy, extractCui, extractPage, parsePriceText } from '../lib/extract.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const qaPagesDir = path.resolve(__dirname, '../../qa/pages');
@@ -321,5 +321,74 @@ describe('Seller and CUI extraction from page snippets', () => {
 
     assert.equal(data.seller.name, 'PC Garage SRL');
     assert.equal(data.seller.cui, '18189442');
+  });
+});
+
+describe('detectReturnPolicy', () => {
+  test('detects return policy from link href containing retur', () => {
+    const html = `<html><body><a href="https://shop.ro/politica-de-retur">Conditii</a></body></html>`;
+    const doc = new JSDOM(html).window.document;
+    assert.equal(detectReturnPolicy(doc), true);
+  });
+
+  test('detects return policy from link text mentioning retur', () => {
+    const html = `<html><body><a href="https://shop.ro/info">Politica de retur</a></body></html>`;
+    const doc = new JSDOM(html).window.document;
+    assert.equal(detectReturnPolicy(doc), true);
+  });
+
+  test('detects return policy from legal text mentioning drept de retragere', () => {
+    const html = `<html><body><p>Beneficiati de drept de retragere in 14 zile conform legii.</p></body></html>`;
+    const doc = new JSDOM(html).window.document;
+    assert.equal(detectReturnPolicy(doc), true);
+  });
+
+  test('detects return policy from legal text mentioning dreptul de retragere', () => {
+    const html = `<html><body><footer>Dreptul de retragere este garantat.</footer></body></html>`;
+    const doc = new JSDOM(html).window.document;
+    assert.equal(detectReturnPolicy(doc), true);
+  });
+
+  test('detects return policy from promotional/benefit text mentioning retur gratuit', () => {
+    const html = `<html><body><div class="benefits">Retur gratuit in 30 de zile</div></body></html>`;
+    const doc = new JSDOM(html).window.document;
+    assert.equal(detectReturnPolicy(doc), true);
+  });
+
+  test('returns false when no return policy is mentioned', () => {
+    const html = `<html><body><h1>Vand ceas</h1><p>Stare impecabila, predare personala.</p></body></html>`;
+    const doc = new JSDOM(html).window.document;
+    assert.equal(detectReturnPolicy(doc), false);
+  });
+
+  test('sets hasReturnPolicy correctly in extractPage for pages with return policy', () => {
+    const html = `
+      <html>
+        <head><title>Telefon</title></head>
+        <body>
+          <h1 class="page-title">Telefon nou</h1>
+          <p class="product-new-price">100 Lei</p>
+          <a href="/retur">Politica de retur</a>
+        </body>
+      </html>
+    `;
+    const dom = new JSDOM(html, { url: 'https://www.emag.ro/telefon/pd/123/' });
+    const data = extractPage(dom.window.document, 'https://www.emag.ro/telefon/pd/123/');
+    assert.equal(data.hasReturnPolicy, true);
+  });
+
+  test('sets hasReturnPolicy to false in extractPage when missing', () => {
+    const html = `
+      <html>
+        <head><title>Ceas</title></head>
+        <body>
+          <h1 data-cy="ad_title">Ceas vintage</h1>
+          <div data-testid="ad-price-container"><h3>200 lei</h3></div>
+        </body>
+      </html>
+    `;
+    const dom = new JSDOM(html, { url: 'https://www.olx.ro/d/oferta/ceas-123.html' });
+    const data = extractPage(dom.window.document, 'https://www.olx.ro/d/oferta/ceas-123.html');
+    assert.equal(data.hasReturnPolicy, false);
   });
 });
