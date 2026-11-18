@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     llm_model: str = "claude-sonnet-4-6"
     result_ttl_seconds: int = Field(default=86400, validation_alias="RESULT_TTL_SECONDS")
     image_cache_ttl_seconds: int = Field(default=604800, validation_alias="IMAGE_CACHE_TTL_SECONDS")
+    # Look the seller's CUI up in ANAF's public register (needs internet).
+    anaf_check: bool = Field(default=True, validation_alias="ANAF_CHECK")
+    anaf_timeout_seconds: float = Field(default=3.0, validation_alias="ANAF_TIMEOUT_SECONDS")
+    anaf_cache_ttl_seconds: int = Field(default=86400, validation_alias="ANAF_CACHE_TTL_SECONDS")
 
 
 @lru_cache

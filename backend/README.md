@@ -37,6 +37,9 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `REDIS_URL` | `redis://localhost:6379` | Redis for the job queue and result storage |
 | `RESULT_TTL_SECONDS` | `86400` | Expiration time for analysis results in Redis (default: 24h) |
 | `IMAGE_CACHE_TTL_SECONDS` | `604800` | Expiration time for cached image detection results (default: 7 days) |
+| `ANAF_CHECK` | `true` | Confirm the seller's CUI with ANAF's public API. If ANAF is slow or down, the check is skipped |
+| `ANAF_TIMEOUT_SECONDS` | `3` | How long to wait for ANAF |
+| `ANAF_CACHE_TTL_SECONDS` | `86400` | How long a looked-up company stays cached (default: 1 day) |
 | `LLM_API_KEY` | | Anthropic API key for the legal report (`AI_MODE=real`) |
 | `LLM_MODEL` | `claude-sonnet-4-6` | Claude model that writes the legal report summary |
 
