@@ -2,9 +2,6 @@
 
 Each check takes the page data and returns a TrustCheck, or None to skip the check. To add a
 check, write a function and add it to CHECKS.
-
-TODO(David):
-- suspicious_price: flag prices far below what the product usually costs
 """
 
 import re
@@ -12,7 +9,7 @@ from collections.abc import Callable
 
 from app.config import get_settings
 from app.schemas import PageData, TrustCheck, TrustReport
-from app.services import anaf
+from app.services import anaf, price
 
 # Weights for the Romanian CUI/CIF check digit, applied to the digits before it.
 _CUI_KEY = "753217532"
@@ -96,6 +93,31 @@ def check_cui_anaf(page: PageData) -> TrustCheck | None:
     )
 
 
+def check_suspicious_price(page: PageData) -> TrustCheck | None:
+    """Flag a price far below the typical one. Skipped if the product or price is unknown."""
+    if page.price is None or page.price <= 0 or page.currency != price.CURRENCY:
+        return None
+    reference = price.find_reference(page.title)
+    if reference is None:
+        return None
+    typical = f"{reference.price:,.0f} {price.CURRENCY}".replace(",", " ")
+    if price.is_suspicious(page.price, reference):
+        percent = round(100 * price.discount(page.price, reference))
+        return TrustCheck(
+            id="suspicious_price",
+            passed=False,
+            message=(
+                f"The price ({page.price:,.0f} {price.CURRENCY}) is {percent}% below the typical "
+                f"price of about {typical} for {reference.name}. Offers this cheap are often scams."
+            ).replace(",", " "),
+        )
+    return TrustCheck(
+        id="suspicious_price",
+        passed=True,
+        message=f"The price is in a normal range for {reference.name} (typically about {typical}).",
+    )
+
+
 def check_anpc_link(page: PageData) -> TrustCheck:
     passed = page.legal_links.anpc
     message = (
@@ -126,6 +148,7 @@ CHECKS: list[Callable[[PageData], TrustCheck | None]] = [
     check_https,
     check_cui_valid,
     check_cui_anaf,
+    check_suspicious_price,
     check_anpc_link,
     check_sol_link,
     check_return_policy,
