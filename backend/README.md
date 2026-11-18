@@ -8,6 +8,7 @@ FastAPI service that runs the three checks. Setup is in the [main README](../REA
 | `pytest` | Runs the tests |
 | `ruff check .` / `ruff format .` | Lint / format |
 | `python -m app.ai.rag.ingest` | Loads the law texts into the vector database |
+| `RAG_TEST_DATABASE_URL=<url> pytest tests/test_retrieval.py` | Also checks the search against a real, ingested database |
 
 ## Files
 
