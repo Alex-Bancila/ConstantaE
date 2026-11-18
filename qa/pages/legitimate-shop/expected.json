@@ -1,0 +1,68 @@
+{
+  "scenario": "legitimate-shop",
+  "description": "Legitimate, fully compliant Romanian e-commerce shop (eMAG style)",
+  "pageData": {
+    "title": "Espressor automat De'Longhi Magnifica S ECAM 22.110.B, 1450W, 15 bar, 1.8 l, Negru",
+    "price": 1549.99,
+    "currency": "RON",
+    "images": ["photo1.jpg", "photo2.png", "photo3.png"],
+    "seller": {
+      "name": "Dante International S.A.",
+      "cui": "RO14399840"
+    },
+    "legalLinks": {
+      "anpc": true,
+      "sol": true
+    },
+    "hasReturnPolicy": true
+  },
+  "expectedAnalysis": {
+    "status": "done",
+    "images": [
+      {
+        "url": "photo1.jpg",
+        "expectedRisk": "low",
+        "aiProbabilityRange": [0.0, 0.15],
+        "signals": ["Authentic camera optics", "Camera EXIF data present"]
+      },
+      {
+        "url": "photo2.png",
+        "expectedRisk": "low",
+        "aiProbabilityRange": [0.0, 0.15],
+        "signals": ["Authentic camera optics"]
+      },
+      {
+        "url": "photo3.png",
+        "expectedRisk": "low",
+        "aiProbabilityRange": [0.0, 0.15],
+        "signals": ["Natural texture and noise pattern"]
+      }
+    ],
+    "trust": {
+      "expectedScoreHttps": 100,
+      "expectedScoreLocalhostHttp": 80,
+      "checks": {
+        "https": { "passedOnHttps": true, "passedOnLocalhostHttp": false },
+        "cui_present": { "passed": true, "note": "RO14399840 present and valid" },
+        "anpc_link": { "passed": true, "note": "Link to anpc.ro present" },
+        "sol_link": { "passed": true, "note": "Link to ec.europa.eu/consumers/odr present" },
+        "return_policy": { "passed": true, "note": "30-day return policy clearly offered" }
+      }
+    },
+    "legal": {
+      "summary": "The trader is fully compliant with legal disclosure obligations. Romanian law grants a minimum 14-day right of withdrawal from distance contracts without penalty (the trader voluntarily extends this to 30 days).",
+      "citations": [
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 9",
+          "subject": "Dreptul de retragere in 14 zile"
+        },
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 6",
+          "subject": "Cerinte de informare precontractuala (identitate vanzator, CUI)"
+        }
+      ]
+    }
+  }
+}
