@@ -18,10 +18,10 @@ User accounts are left out on purpose: they bring the least value to the user ri
 - [ ] 10 test questions with the expected article; check each answer cites it
 
 ## Rareș: AI Vision
-- [ ] Try 2-3 pretrained AI-image detectors from Hugging Face; keep the most accurate
-- [ ] `detect(image_url)`: download with a timeout and size limit, return a probability
-- [ ] Metadata checks first: C2PA credentials, EXIF "Software", missing camera data
-- [ ] Measure accuracy on `qa/images` with Ovidiu; write the number down for the demo
+- [x] Try 2-3 pretrained AI-image detectors from Hugging Face; keep the most accurate
+- [x] `detect(image_url)`: download with a timeout and size limit, return a probability
+- [x] Metadata checks first: C2PA credentials, EXIF "Software", missing camera data
+- [x] Measure accuracy on `qa/images` with Ovidiu; write the number down for the demo ([`docs/ai-detector-evaluation.md`](ai-detector-evaluation.md))
 - [ ] Out of scope for the demo: AI text detection
 
 ## David: Backend core + integration

@@ -1,0 +1,6 @@
+# AI-image detection (app/ai/vision, scripts/compare_detectors.py).
+# Kept separate because torch is large. Install with: pip install -r requirements-vision.txt
+# This pulls the CPU build of torch; for CUDA see https://pytorch.org/get-started/locally/
+torch~=2.15
+transformers~=5.22
+pillow~=13.0

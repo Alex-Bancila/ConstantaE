@@ -15,8 +15,10 @@ node_modules/
 
 # Test output
 qa/e2e/screenshots/
+qa/images_extra/
 
 # Editors and OS
+.vs/
 .vscode/*
 !.vscode/extensions.json
 .idea/

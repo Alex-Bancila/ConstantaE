@@ -6,3 +6,6 @@ pgvector~=0.4
 psycopg[binary]~=3.2
 sentence-transformers~=5.2
 anthropic~=2.10
+redis~=8.1
+rq~=3.0
+
