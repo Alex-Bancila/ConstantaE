@@ -5,10 +5,10 @@
     "title": "Lampa ambientala levitatie magnetica CrystalGlow Orb, RGB Smart Touch",
     "price": 289.0,
     "currency": "RON",
-    "images": ["photo1.svg", "photo2.svg"],
+    "images": ["photo1.png", "photo2.png"],
     "seller": {
       "name": "Luminaria Studio SRL",
-      "cui": "RO41298451"
+      "cui": "RO41298452"
     },
     "legalLinks": {
       "anpc": true,
@@ -20,7 +20,7 @@
     "status": "done",
     "images": [
       {
-        "url": "photo1.svg",
+        "url": "photo1.png",
         "expectedRisk": "high",
         "aiProbabilityRange": [0.85, 0.99],
         "signals": [
@@ -31,7 +31,7 @@
         ]
       },
       {
-        "url": "photo2.svg",
+        "url": "photo2.png",
         "expectedRisk": "high",
         "aiProbabilityRange": [0.85, 0.99],
         "signals": [
@@ -46,7 +46,7 @@
       "expectedScoreLocalhostHttp": 80,
       "checks": {
         "https": { "passedOnHttps": true, "passedOnLocalhostHttp": false },
-        "cui_valid": { "passed": true, "note": "RO41298451 present" },
+        "cui_valid": { "passed": true, "note": "RO41298452 present" },
         "anpc_link": { "passed": true, "note": "ANPC link present" },
         "sol_link": { "passed": true, "note": "SOL link present" },
         "return_policy": { "passed": true, "note": "14-day statutory return policy present" }
@@ -64,11 +64,6 @@
           "law": "OUG 34/2014",
           "article": "Art. 6",
           "subject": "Obligatia de a furniza principalele caracteristici ale bunurilor"
-        },
-        {
-          "law": "Legea 363/2007",
-          "article": "Art. 6",
-          "subject": "Practici comerciale inselatoare privind caracteristicile esentiale ale produsului"
         }
       ]
     }

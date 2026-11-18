@@ -366,6 +366,8 @@ describe('detectReturnPolicy', () => {
       'Cumparatorul renunta expres la orice drept de retur, retragere sau garantie.',
       'Produsul NU este returnabil!',
       'Oferta fara retur.',
+      'Cumparatorul renun\u021ba la dreptul de retur.',
+      'Ofert\u0103 f\u0103r\u0103 retur.',
       'Nu se accepta retur.',
     ]) {
       const doc = new JSDOM(`<html><body><p>${text}</p></body></html>`).window.document;

@@ -59,7 +59,7 @@ python -m http.server 8001 --directory qa/pages/legitimate-shop
 ### 2. Listing with AI Photos (`qa/pages/ai-photos/`)
 - **Concept:** Boutique lifestyle gadget listing (*Luminaria Studio*).
 - **Product:** *Lampa ambientala levitatie magnetica CrystalGlow Orb* (289,00 RON).
-- **Seller:** Luminaria Studio SRL, CUI: `RO41298451`.
+- **Seller:** Luminaria Studio SRL, CUI: `RO41298452`.
 - **Expected Results:**
   - **Images (2 images):** HIGH AI Risk (> 0.85 probability). Red badges. Diffusion texture smoothing, impossible light caustics, perspective artifacts.
   - **Trust Score:** 100/100 on HTTPS (80/100 on `http://localhost`). The seller is legally registered and provides all links.

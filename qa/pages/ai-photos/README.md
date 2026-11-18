@@ -20,11 +20,11 @@ Open: `http://localhost:8001/product.html`
 | Area | Expected Result | Why |
 |---|---|---|
 | **AI Images** | **HIGH risk** (red badges, AI score > 0.85) | The images exhibit diffusion texture smoothness, impossible multi-directional light caustics, and warped perspective geometry characteristic of generative diffusion models. |
-| **Seller Trust** | **Score: 100/100** (80/100 when served on plain HTTP `localhost`) | The seller is a registered Romanian SRL (CUI RO41298451), provides working ANPC and SOL links, and provides a 14-day return policy. |
+| **Seller Trust** | **Score: 100/100** (80/100 when served on plain HTTP `localhost`) | The seller is a registered Romanian SRL (CUI RO41298452), provides working ANPC and SOL links, and provides a 14-day return policy. |
 | **Consumer Rights** | Warning on product conformity & misleading practices | While the statutory 14-day withdrawal right applies (OUG 34/2014 Art. 9), synthetic images that mislead consumers regarding real-life finish or dimensions violate OUG 34/2014 Art. 6 and Legea 363/2007 (misleading commercial practices). |
 
 ## Assets
 
-- `photo1.svg`: AI-rendered floating crystal orb with impossible internal galaxy refraction and glow caustics.
-- `photo2.svg`: AI-rendered room scene with perspective inconsistencies and synthetic lighting artifacts.
+- `photo1.png`: AI-rendered floating crystal orb with impossible internal galaxy refraction and glow caustics.
+- `photo2.png`: AI-rendered room scene with perspective inconsistencies and synthetic lighting artifacts.
 - `expected.json`: Machine-readable contract test data.

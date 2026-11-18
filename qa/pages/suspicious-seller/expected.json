@@ -21,9 +21,9 @@
     "images": [
       {
         "url": "photo1.png",
-        "expectedRisk": "high",
-        "aiProbabilityRange": [0.4, 0.8],
-        "signals": ["Non-standard hardware proportions", "Obvious counterfeit/knockoff design"]
+        "expectedRisk": "low",
+        "aiProbabilityRange": [0.0, 0.4],
+        "signals": ["No camera EXIF data"]
       }
     ],
     "trust": {

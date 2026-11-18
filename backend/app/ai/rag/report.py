@@ -53,6 +53,9 @@ QUESTIONS_BY_CHECK = {
     ),
 }
 ARTICLES_PER_QUESTION = 3
+# The right of withdrawal is always asked about and is the core of the report, but its
+# main article (OUG 34/2014 art. 9) ranks only fourth, behind art. 16, 28 and 14.
+WITHDRAWAL_ARTICLES = 5
 CITATION_TEXT_LIMIT = 500
 
 NOTHING_FOUND_SUMMARY = (
@@ -107,7 +110,12 @@ def gather_articles(
 ) -> list[LawArticle]:
     articles: list[LawArticle] = []
     for question in questions:
-        for result in search(question, per_question):
+        count = (
+            max(per_question, WITHDRAWAL_ARTICLES)
+            if question == WITHDRAWAL_QUESTION
+            else per_question
+        )
+        for result in search(question, count):
             if result.article not in articles:
                 articles.append(result.article)
     return articles

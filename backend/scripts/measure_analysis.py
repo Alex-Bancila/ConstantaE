@@ -51,7 +51,7 @@ SAMPLE_PAGE_DATA: dict[str, object] = {
     "title": "iPhone 15 Pro, sigilat",
     "price": 1200,
     "currency": "RON",
-    "images": ["photo1.svg", "photo2.svg"],
+    "images": ["photo1.png", "photo2.png"],
     "seller": {"name": None, "cui": None},
     "legalLinks": {"anpc": False, "sol": True},
     "hasReturnPolicy": False,
