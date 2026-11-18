@@ -1,0 +1,247 @@
+{
+  "extensionDescription": {
+    "message": "Checks product photos for AI generation, the seller for red flags and the offer against Romanian consumer law."
+  },
+  "productReview": {
+    "message": "Product review"
+  },
+  "unknownSite": {
+    "message": "Unknown site"
+  },
+  "currentTab": {
+    "message": "Current tab"
+  },
+  "demoListing": {
+    "message": "Demo listing"
+  },
+  "analysisMode": {
+    "message": "Analysis mode"
+  },
+  "modeDemo": {
+    "message": "Demo"
+  },
+  "modeLive": {
+    "message": "Live"
+  },
+  "analyzeAgain": {
+    "message": "Analyze again"
+  },
+  "runDemoAnalysis": {
+    "message": "Run demo analysis"
+  },
+  "analyzeCurrentPage": {
+    "message": "Analyze current product page"
+  },
+  "demoDescription": {
+    "message": "Sample data only. Nothing is sent to the analysis service."
+  },
+  "liveMockDescription": {
+    "message": "Current page with simulated results. Nothing is sent to the analysis service."
+  },
+  "liveDescription": {
+    "message": "Listing details are sent to the configured analysis service."
+  },
+  "readyToAnalyze": {
+    "message": "Ready to analyze"
+  },
+  "readyDescription": {
+    "message": "Image estimates, seller checks and legal sources appear here after analysis."
+  },
+  "analyzingProduct": {
+    "message": "Analyzing product..."
+  },
+  "analysisUnavailable": {
+    "message": "Analysis unavailable"
+  },
+  "tryAgain": {
+    "message": "Try again"
+  },
+  "legalDisclaimer": {
+    "message": "This is not legal advice. Results require human review."
+  },
+  "priceUnavailable": {
+    "message": "Price unavailable"
+  },
+  "currentListing": {
+    "message": "Current listing"
+  },
+  "untitledListing": {
+    "message": "Untitled listing"
+  },
+  "sellerUnknown": {
+    "message": "Seller unknown"
+  },
+  "loadingSample": {
+    "message": "Loading sample analysis..."
+  },
+  "extractingListing": {
+    "message": "Extracting listing data..."
+  },
+  "sendingData": {
+    "message": "Sending data to backend..."
+  },
+  "analysisQueued": {
+    "message": "Analysis queued · checking results ($CURRENT$/$LIMIT$)",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "1"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "60"
+      }
+    }
+  },
+  "errorUnsupportedPage": {
+    "message": "Product information could not be read from this page. Open an OLX or eMAG product listing, or the sample page on localhost, and try again. You can also use Demo mode."
+  },
+  "errorNoActiveTab": {
+    "message": "No active browser tab found. Open a product listing or use Demo mode."
+  },
+  "errorAnalysisTimeout": {
+    "message": "The analysis is taking too long. Try again."
+  },
+  "errorAnalysisFailed": {
+    "message": "The analysis failed. Please try again."
+  },
+  "errorInvalidAnalysis": {
+    "message": "The backend returned an invalid analysis result. Please try again."
+  },
+  "imageAnalysis": {
+    "message": "Image analysis"
+  },
+  "imageCountOne": {
+    "message": "$COUNT$ image",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "imageCountFew": {
+    "message": "$COUNT$ images",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "imageCountOther": {
+    "message": "$COUNT$ images",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
+  "noImages": {
+    "message": "No images were returned for this listing."
+  },
+  "productImage": {
+    "message": "Product image $NUMBER$",
+    "placeholders": {
+      "number": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "aiLikelihood": {
+    "message": "AI likelihood"
+  },
+  "aiDisclaimer": {
+    "message": "AI scores are estimates, not proof an image was generated artificially."
+  },
+  "sellerTrustCheck": {
+    "message": "Seller trust check"
+  },
+  "noTrustAssessment": {
+    "message": "No trust assessment available."
+  },
+  "trustDisclaimer": {
+    "message": "Indicative trust score. Not a safety guarantee."
+  },
+  "noTrustChecks": {
+    "message": "No trust checks were returned."
+  },
+  "passedPrefix": {
+    "message": "Passed: "
+  },
+  "needsReviewPrefix": {
+    "message": "Needs review: "
+  },
+  "legalReport": {
+    "message": "Legal report"
+  },
+  "noLegalReport": {
+    "message": "No legal report available yet."
+  },
+  "noCitations": {
+    "message": "No verified citations returned."
+  },
+  "openLegislation": {
+    "message": "Open legislation"
+  },
+  "tabImages": {
+    "message": "Images"
+  },
+  "tabSeller": {
+    "message": "Seller"
+  },
+  "tabLegal": {
+    "message": "Legal"
+  },
+  "analysisOverview": {
+    "message": "Analysis overview"
+  },
+  "complete": {
+    "message": "Complete"
+  },
+  "highestAiEstimate": {
+    "message": "Highest AI estimate"
+  },
+  "sellerScore": {
+    "message": "Seller score"
+  },
+  "legalSources": {
+    "message": "Legal sources"
+  },
+  "notAvailable": {
+    "message": "N/A"
+  },
+  "analysisResults": {
+    "message": "Analysis results"
+  },
+  "errorMockPending": {
+    "message": "Mock analyses are never pending."
+  },
+  "errorBackendUnreachable": {
+    "message": "Cannot reach the backend at $URL$. Is it running?",
+    "placeholders": {
+      "url": {
+        "content": "$1",
+        "example": "http://localhost:8000"
+      }
+    }
+  },
+  "errorBackendHttp": {
+    "message": "The backend returned $STATUS$ for $PATH$.",
+    "placeholders": {
+      "status": {
+        "content": "$1",
+        "example": "503"
+      },
+      "path": {
+        "content": "$2",
+        "example": "/analyze"
+      }
+    }
+  },
+  "errorNoReply": {
+    "message": "No reply from the other side of the extension."
+  }
+}

@@ -1,4 +1,5 @@
 import { browser } from 'wxt/browser';
+import { t } from './i18n';
 import type { ImageResult, PageData } from './types';
 
 /** Every message the parts of the extension send each other. */
@@ -36,7 +37,7 @@ export function errorMessage(error: unknown): string {
 }
 
 function unwrap<T>(reply: Reply<T> | undefined): T {
-  if (!reply) throw new Error('No reply from the other side of the extension.');
+  if (!reply) throw new Error(t('errorNoReply'));
   if (!reply.ok) throw new Error(reply.error);
   return reply.data;
 }
