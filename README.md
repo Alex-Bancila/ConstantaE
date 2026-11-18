@@ -39,7 +39,7 @@ page, it checks three things:
 | [`shared/`](shared) | Example request and mock response, used by both sides | everyone |
 | [`docs/`](docs) | API contract, roadmap | everyone |
 
-DevOps (Docker, CI/CD) is not set up yet; Alex will add it.
+Docker Compose runs the backend stack locally (see below). Owner: Alex.
 
 ## Getting started
 
@@ -47,6 +47,39 @@ You need **Python 3.12+**, **Node.js 22+** and **Chrome**.
 
 > **Windows:** clone into a short path such as `C:\dev\ConstantaE`. Some npm packages
 > have very deep folders, and `npm install` fails when a path goes over 260 characters.
+
+### Quick start with Docker (recommended)
+
+Needs [Docker Desktop](https://www.docker.com/products/docker-desktop/). Starts Postgres
+(pgvector), Redis, the API and the worker:
+
+```bash
+cp backend/.env.example backend/.env   # Windows: copy backend\.env.example backend\.env
+docker compose up --build
+```
+
+The first build takes a few minutes (it installs PyTorch).
+
+| Service | From your PC |
+|---|---|
+| API | http://localhost:8000 (docs at `/docs`) |
+| Postgres (pgvector) | `localhost:5440`, user and password `postgres`, database `constantae` |
+| Redis | `localhost:6379` |
+
+Inside Docker the services reach each other as `db` and `redis`; `docker-compose.yml`
+sets `DATABASE_URL` and `REDIS_URL` for you, so you don't need to change them in `.env`.
+
+Load the law texts into the database (needed for `AI_MODE=real`):
+
+```bash
+docker compose exec api python -m app.ai.rag.ingest
+```
+
+Stop everything with `docker compose down`. Add `-v` to also delete the database data.
+After changing `requirements*.txt` or the `Dockerfile`, rebuild with `docker compose up --build`.
+
+Then load the extension as in step 2 below. The manual backend setup in step 1 is only
+needed if you don't use Docker.
 
 ### 1. Backend
 
