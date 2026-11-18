@@ -1,0 +1,61 @@
+{
+  "scenario": "marketplace-individual",
+  "description": "Peer-to-peer (C2C) classifieds listing by an individual seller with authentic smartphone photos (OLX style)",
+  "pageData": {
+    "title": "Bicicleta trekking Riverside 500 marimea M - stare impecabila",
+    "price": 750.0,
+    "currency": "RON",
+    "images": ["photo1.svg", "photo2.svg"],
+    "seller": {
+      "name": "Andrei C.",
+      "cui": null
+    },
+    "legalLinks": {
+      "anpc": false,
+      "sol": false
+    },
+    "hasReturnPolicy": false
+  },
+  "expectedAnalysis": {
+    "status": "done",
+    "images": [
+      {
+        "url": "photo1.svg",
+        "expectedRisk": "low",
+        "aiProbabilityRange": [0.0, 0.1],
+        "signals": ["Smartphone camera EXIF present (iPhone 13)", "Natural daylight shadows and grain"]
+      },
+      {
+        "url": "photo2.svg",
+        "expectedRisk": "low",
+        "aiProbabilityRange": [0.0, 0.1],
+        "signals": ["Natural macro camera focus", "Realistic wear and mechanical detail"]
+      }
+    ],
+    "trust": {
+      "expectedScore": 0,
+      "checks": {
+        "https": { "passed": false, "note": "Localhost / unencrypted HTTP" },
+        "cui_present": { "passed": false, "note": "Private seller; no company registration number" },
+        "anpc_link": { "passed": false, "note": "No ANPC link (not applicable to private individuals)" },
+        "sol_link": { "passed": false, "note": "No SOL link (not applicable to private individuals)" },
+        "return_policy": { "passed": false, "note": "No 14-day statutory return policy" }
+      }
+    },
+    "legal": {
+      "summary": "PEER-TO-PEER TRANSACTION NOTICE: This item is sold by a private individual ('persoana fizica'). Under Romanian consumer law (OUG 34/2014 and OG 21/1992), consumer protections and the 14-day statutory right of withdrawal apply exclusively to contracts between consumers and professional traders ('profesionisti'). Purchases between private individuals are governed by the Romanian Civil Code regarding warranty for hidden defects.",
+      "citations": [
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 2 pct. 2",
+          "subject": "Definitia profesionistului (legea se aplica exclusiv raporturilor profesionist-consumator)"
+        },
+        {
+          "law": "Codul Civil",
+          "article": "Art. 1707",
+          "subject": "Garantia contra viciilor ascunse ale bunului vandut"
+        }
+      ]
+    }
+  }
+}

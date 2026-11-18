@@ -1,0 +1,76 @@
+{
+  "scenario": "ai-photos",
+  "description": "Product listing with AI-generated synthetic images from a legally registered seller",
+  "pageData": {
+    "title": "Lampa ambientala levitatie magnetica CrystalGlow Orb, RGB Smart Touch",
+    "price": 289.0,
+    "currency": "RON",
+    "images": ["photo1.svg", "photo2.svg"],
+    "seller": {
+      "name": "Luminaria Studio SRL",
+      "cui": "RO41298451"
+    },
+    "legalLinks": {
+      "anpc": true,
+      "sol": true
+    },
+    "hasReturnPolicy": true
+  },
+  "expectedAnalysis": {
+    "status": "done",
+    "images": [
+      {
+        "url": "photo1.svg",
+        "expectedRisk": "high",
+        "aiProbabilityRange": [0.85, 0.99],
+        "signals": [
+          "Synthetic diffusion textures detected",
+          "No camera sensor pattern",
+          "Anomalous reflection geometry",
+          "EXIF missing camera hardware"
+        ]
+      },
+      {
+        "url": "photo2.svg",
+        "expectedRisk": "high",
+        "aiProbabilityRange": [0.85, 0.99],
+        "signals": [
+          "Synthetic perspective artifacts",
+          "No camera EXIF data",
+          "Model score > 0.85"
+        ]
+      }
+    ],
+    "trust": {
+      "expectedScoreHttps": 100,
+      "expectedScoreLocalhostHttp": 80,
+      "checks": {
+        "https": { "passedOnHttps": true, "passedOnLocalhostHttp": false },
+        "cui_present": { "passed": true, "note": "RO41298451 present" },
+        "anpc_link": { "passed": true, "note": "ANPC link present" },
+        "sol_link": { "passed": true, "note": "SOL link present" },
+        "return_policy": { "passed": true, "note": "14-day statutory return policy present" }
+      }
+    },
+    "legal": {
+      "summary": "The trader satisfies formal disclosure requirements (CUI, ANPC, SOL, 14-day withdrawal under OUG 34/2014). However, using synthetic AI imagery without disclosure may constitute a misleading commercial practice under Legea 363/2007 if the physical product significantly differs from the rendered representations.",
+      "citations": [
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 9",
+          "subject": "Dreptul de retragere in 14 zile fara penalitati"
+        },
+        {
+          "law": "OUG 34/2014",
+          "article": "Art. 6",
+          "subject": "Obligatia de a furniza principalele caracteristici ale bunurilor"
+        },
+        {
+          "law": "Legea 363/2007",
+          "article": "Art. 6",
+          "subject": "Practici comerciale inselatoare privind caracteristicile esentiale ale produsului"
+        }
+      ]
+    }
+  }
+}
