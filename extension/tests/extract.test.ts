@@ -361,6 +361,30 @@ describe('detectReturnPolicy', () => {
     assert.equal(detectReturnPolicy(doc), false);
   });
 
+  test('a sentence that waives the right to return is not a return policy', () => {
+    for (const text of [
+      'Cumparatorul renunta expres la orice drept de retur, retragere sau garantie.',
+      'Produsul NU este returnabil!',
+      'Oferta fara retur.',
+      'Cumparatorul renun\u021ba la dreptul de retur.',
+      'Ofert\u0103 f\u0103r\u0103 retur.',
+      'Nu se accepta retur.',
+    ]) {
+      const doc = new JSDOM(`<html><body><p>${text}</p></body></html>`).window.document;
+      assert.equal(detectReturnPolicy(doc), false, text);
+    }
+  });
+
+  test('a waiver does not hide a real return policy elsewhere on the page', () => {
+    const html = `<html><body><p>Produsul NU este returnabil dupa 14 zile.</p><p>Retur gratuit in 14 zile.</p></body></html>`;
+    assert.equal(detectReturnPolicy(new JSDOM(html).window.document), true);
+  });
+
+  test('suspicious-seller demo page has no return policy', () => {
+    const url = 'http://localhost:8001/suspicious-seller/product.html';
+    assert.equal(extractPage(loadDocument('suspicious-seller/product.html', url), url).hasReturnPolicy, false);
+  });
+
   test('sets hasReturnPolicy correctly in extractPage for pages with return policy', () => {
     const html = `
       <html>

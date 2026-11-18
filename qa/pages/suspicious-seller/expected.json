@@ -21,16 +21,16 @@
     "images": [
       {
         "url": "photo1.png",
-        "expectedRisk": "high",
-        "aiProbabilityRange": [0.4, 0.8],
-        "signals": ["Non-standard hardware proportions", "Obvious counterfeit/knockoff design"]
+        "expectedRisk": "low",
+        "aiProbabilityRange": [0.0, 0.4],
+        "signals": ["No camera EXIF data"]
       }
     ],
     "trust": {
       "expectedScore": 0,
       "checks": {
         "https": { "passed": false, "note": "Localhost / unencrypted HTTP" },
-        "cui_present": { "passed": false, "note": "No CUI/CIF found on the page" },
+        "cui_valid": { "passed": false, "note": "No CUI/CIF found on the page" },
         "anpc_link": { "passed": false, "note": "ANPC link is missing" },
         "sol_link": { "passed": false, "note": "SOL link is missing" },
         "return_policy": { "passed": false, "note": "No lawful return policy; seller attempts to waive statutory rights" }

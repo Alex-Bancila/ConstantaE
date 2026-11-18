@@ -5,7 +5,7 @@
     "title": "Bicicleta trekking Riverside 500 marimea M - stare impecabila",
     "price": 750.0,
     "currency": "RON",
-    "images": ["photo1.svg", "photo2.svg"],
+    "images": ["photo1.png", "photo2.png"],
     "seller": {
       "name": "Andrei C.",
       "cui": null
@@ -20,13 +20,13 @@
     "status": "done",
     "images": [
       {
-        "url": "photo1.svg",
+        "url": "photo1.png",
         "expectedRisk": "low",
         "aiProbabilityRange": [0.0, 0.1],
         "signals": ["Smartphone camera EXIF present (iPhone 13)", "Natural daylight shadows and grain"]
       },
       {
-        "url": "photo2.svg",
+        "url": "photo2.png",
         "expectedRisk": "low",
         "aiProbabilityRange": [0.0, 0.1],
         "signals": ["Natural macro camera focus", "Realistic wear and mechanical detail"]
@@ -36,7 +36,7 @@
       "expectedScore": 0,
       "checks": {
         "https": { "passed": false, "note": "Localhost / unencrypted HTTP" },
-        "cui_present": { "passed": false, "note": "Private seller; no company registration number" },
+        "cui_valid": { "passed": false, "note": "Private seller; no company registration number" },
         "anpc_link": { "passed": false, "note": "No ANPC link (not applicable to private individuals)" },
         "sol_link": { "passed": false, "note": "No SOL link (not applicable to private individuals)" },
         "return_policy": { "passed": false, "note": "No 14-day statutory return policy" }
@@ -47,13 +47,8 @@
       "citations": [
         {
           "law": "OUG 34/2014",
-          "article": "Art. 2 pct. 2",
+          "article": "Art. 2",
           "subject": "Definitia profesionistului (legea se aplica exclusiv raporturilor profesionist-consumator)"
-        },
-        {
-          "law": "Codul Civil",
-          "article": "Art. 1707",
-          "subject": "Garantia contra viciilor ascunse ale bunului vandut"
         }
       ]
     }

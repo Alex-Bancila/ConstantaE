@@ -50,7 +50,7 @@ python -m http.server 8001 --directory qa/pages/legitimate-shop
   - **Images (3 images):** LOW AI Risk (< 0.15 probability). Real camera optics, clean angle shots. Green badges.
   - **Trust Score:** 100/100 on HTTPS (80/100 on `http://localhost`).
     - `https`: passed (when served on https)
-    - `cui_present`: passed (`RO14399840`)
+    - `cui_valid`: passed (`RO14399840`)
     - `anpc_link`: passed (`https://anpc.ro/`)
     - `sol_link`: passed (`https://ec.europa.eu/consumers/odr`)
     - `return_policy`: passed (30-day return policy)
@@ -59,7 +59,7 @@ python -m http.server 8001 --directory qa/pages/legitimate-shop
 ### 2. Listing with AI Photos (`qa/pages/ai-photos/`)
 - **Concept:** Boutique lifestyle gadget listing (*Luminaria Studio*).
 - **Product:** *Lampa ambientala levitatie magnetica CrystalGlow Orb* (289,00 RON).
-- **Seller:** Luminaria Studio SRL, CUI: `RO41298451`.
+- **Seller:** Luminaria Studio SRL, CUI: `RO41298452`.
 - **Expected Results:**
   - **Images (2 images):** HIGH AI Risk (> 0.85 probability). Red badges. Diffusion texture smoothing, impossible light caustics, perspective artifacts.
   - **Trust Score:** 100/100 on HTTPS (80/100 on `http://localhost`). The seller is legally registered and provides all links.
@@ -73,7 +73,7 @@ python -m http.server 8001 --directory qa/pages/legitimate-shop
   - **Images (1 image):** Fake/clone iPhone hardware photograph with non-authentic proportions.
   - **Trust Score:** 0/100 (Critical Risk). Fails all 5 trust checks:
     - `https`: failed on localhost
-    - `cui_present`: failed (no CUI found)
+    - `cui_valid`: failed (no CUI found)
     - `anpc_link`: failed (no link to anpc.ro)
     - `sol_link`: failed (no link to SOL)
     - `return_policy`: failed (seller explicitly claims no returns allowed)

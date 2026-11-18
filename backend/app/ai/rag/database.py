@@ -17,6 +17,9 @@ def connect_database(database_url: str) -> Any:
         raise RuntimeError("psycopg and pgvector are required for law ingestion") from error
 
     connection = psycopg.connect(database_url)
+    # A fresh database has no "vector" type yet, and register_vector needs it to exist.
+    connection.execute("CREATE EXTENSION IF NOT EXISTS vector")
+    connection.commit()
     register_vector(connection)
     return connection
 
