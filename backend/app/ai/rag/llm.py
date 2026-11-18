@@ -12,9 +12,6 @@ from app.config import get_settings
 MAX_TOKENS = 16000
 # Summarizing a handful of given articles needs little reasoning.
 EFFORT = "medium"
-# If Claude's safety classifiers decline a request, the API retries it on a
-# fallback model chosen for that kind of refusal, inside the same call.
-FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
 
 class SummaryError(RuntimeError):
@@ -33,14 +30,14 @@ def write_summary(system_prompt: str, user_message: str) -> str:
     if not settings.llm_api_key:
         raise SummaryError("LLM_API_KEY must be set to generate the legal report")
 
-    response = _client(settings.llm_api_key).beta.messages.create(
+    response = _client(settings.llm_api_key).messages.create(
         model=settings.llm_model,
         max_tokens=MAX_TOKENS,
         system=system_prompt,
         messages=[{"role": "user", "content": user_message}],
+        # Claude decides how much to think; effort caps how hard it tries.
+        thinking={"type": "adaptive"},
         output_config={"effort": EFFORT},
-        betas=[FALLBACK_BETA],
-        fallbacks="default",
     )
 
     if response.stop_reason == "refusal":

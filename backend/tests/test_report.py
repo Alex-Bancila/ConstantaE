@@ -190,7 +190,7 @@ class FakeMessages:
 
 def fake_client(monkeypatch, response: SimpleNamespace) -> FakeMessages:
     messages = FakeMessages(response)
-    client = SimpleNamespace(beta=SimpleNamespace(messages=messages))
+    client = SimpleNamespace(messages=messages)
     keys: list[str] = []
 
     def make_client(api_key: str):
@@ -230,7 +230,7 @@ def test_write_summary_reads_the_key_from_settings_and_returns_the_text(monkeypa
     assert messages.keys == ["test-key"]
     assert messages.kwargs["model"] == get_settings().llm_model
     assert messages.kwargs["system"] == "system"
-    assert messages.kwargs["fallbacks"] == "default"
+    assert messages.kwargs["thinking"] == {"type": "adaptive"}
 
 
 def test_write_summary_raises_when_the_model_refuses(monkeypatch):

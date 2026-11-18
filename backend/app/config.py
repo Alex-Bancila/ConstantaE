@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     database_url: str | None = None
     redis_url: str | None = None
     llm_api_key: str | None = None
-    llm_model: str = "claude-opus-5-5"
+    llm_model: str = "claude-sonnet-4-6"
 
 
 @lru_cache
