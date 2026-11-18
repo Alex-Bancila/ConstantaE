@@ -1,0 +1,19 @@
+{
+  "_comment": "Typical new retail price in RON for popular products, used by the suspicious_price check. Approximate and hand-maintained: update the prices from time to time. A product matches when all its keywords appear in the listing title (lowercase, no diacritics). The most specific match (most keywords) wins.",
+  "_updated": "2026-11",
+  "products": [
+    { "name": "iPhone 16 Pro Max", "keywords": ["iphone", "16", "pro", "max"], "price": 6500 },
+    { "name": "iPhone 16 Pro", "keywords": ["iphone", "16", "pro"], "price": 5500 },
+    { "name": "iPhone 16", "keywords": ["iphone", "16"], "price": 4000 },
+    { "name": "iPhone 15 Pro Max", "keywords": ["iphone", "15", "pro", "max"], "price": 5500 },
+    { "name": "iPhone 15 Pro", "keywords": ["iphone", "15", "pro"], "price": 4800 },
+    { "name": "iPhone 15", "keywords": ["iphone", "15"], "price": 3300 },
+    { "name": "Samsung Galaxy S25 Ultra", "keywords": ["galaxy", "s25", "ultra"], "price": 6000 },
+    { "name": "Samsung Galaxy S24 Ultra", "keywords": ["galaxy", "s24", "ultra"], "price": 4800 },
+    { "name": "MacBook Air", "keywords": ["macbook", "air"], "price": 5000 },
+    { "name": "MacBook Pro", "keywords": ["macbook", "pro"], "price": 8000 },
+    { "name": "PlayStation 5", "keywords": ["playstation", "5"], "price": 2500 },
+    { "name": "Xbox Series X", "keywords": ["xbox", "series", "x"], "price": 2600 },
+    { "name": "Apple AirPods Pro", "keywords": ["airpods", "pro"], "price": 1100 }
+  ]
+}

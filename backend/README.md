@@ -63,3 +63,7 @@ You can test the queue and worker end-to-end at any time with:
 python -m app.workers.worker --test
 ```
 
+
+## Suspicious price check
+
+The `suspicious_price` trust check compares the price with the typical price in `data/reference_prices.json` (RON, hand-maintained). A title that matches a listed product and a price under 50% of the typical one fails the check. Products not in the list, accessories, used goods and non-RON prices are skipped. To cover a new product, add an entry with its keywords and price.
