@@ -63,7 +63,7 @@ NOTHING_FOUND_SUMMARY = (
     "articole relevante pentru problemele de pe această pagină."
 )
 LLM_FAILED_SUMMARY = (
-    "Rezumatul nu a putut fi generat acum. Mai jos sunt articolele de lege găsite "
+    "Rezumatul nu a putut fi generat acum, deoarece aceasta este doar o versiune demo, iar funcția nu este încă disponibilă. Mai jos sunt articolele de lege găsite "
     "pentru problemele de pe această pagină."
 )
 
