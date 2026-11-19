@@ -66,8 +66,13 @@ export function drawBadges(results: ImageResult[]): void {
     updatePositions();
   };
 
-  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('scroll', onScrollOrResize, { passive: true, capture: true });
   window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+  // Carousels slide with CSS transitions that raise no DOM mutations.
+  const timer = setInterval(updatePositions, 200);
+  // Lets the Node test runner exit; browsers return a number and skip this.
+  (timer as unknown as { unref?: () => void }).unref?.();
 
   // Observe DOM for lazy loading, carousel slide transitions, and image changes
   const ObserverClass =
@@ -93,7 +98,8 @@ export function drawBadges(results: ImageResult[]): void {
   }
 
   teardown = () => {
-    window.removeEventListener('scroll', onScrollOrResize);
+    window.removeEventListener('scroll', onScrollOrResize, true);
+    clearInterval(timer);
     window.removeEventListener('resize', onScrollOrResize);
     observer?.disconnect();
     activeBadges.clear();
@@ -101,25 +107,61 @@ export function drawBadges(results: ImageResult[]): void {
   };
 }
 
-function positionBadge(badge: HTMLElement, img: HTMLImageElement): void {
+const MIN_VISIBLE_FRACTION = 0.5;
+
+/**
+ * The part of the image that is actually on screen: its box cut down by every
+ * ancestor that clips its content (carousels use overflow:hidden). Null if
+ * nothing, or too little, of the image is visible.
+ */
+function visibleRect(img: HTMLImageElement): { top: number; left: number } | null {
   const rect = img.getBoundingClientRect();
-  if (rect.width === 0 || rect.height === 0 || img.offsetParent === null) {
+  if (rect.width === 0 || rect.height === 0 || img.offsetParent === null) return null;
+
+  let top = rect.top;
+  let left = rect.left;
+  let right = rect.right;
+  let bottom = rect.bottom;
+  for (let el = img.parentElement; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+    const style = getComputedStyle(el);
+    const clipsX = style.overflowX !== 'visible';
+    const clipsY = style.overflowY !== 'visible';
+    if (!clipsX && !clipsY) continue;
+    const box = el.getBoundingClientRect();
+    if (clipsX) {
+      left = Math.max(left, box.left);
+      right = Math.min(right, box.right);
+    }
+    if (clipsY) {
+      top = Math.max(top, box.top);
+      bottom = Math.min(bottom, box.bottom);
+    }
+  }
+
+  const width = right - left;
+  const height = bottom - top;
+  if (width <= 0 || height <= 0) return null;
+  if ((width * height) / (rect.width * rect.height) < MIN_VISIBLE_FRACTION) return null;
+  return { top, left };
+}
+
+function positionBadge(badge: HTMLElement, img: HTMLImageElement): void {
+  const visible = visibleRect(img);
+  if (!visible) {
     badge.style.display = 'none';
     return;
   }
   badge.style.display = 'block';
-  badge.style.top = `${rect.top + window.scrollY + 8}px`;
-  badge.style.left = `${rect.left + window.scrollX + 8}px`;
+  badge.style.top = `${visible.top + window.scrollY + 8}px`;
+  badge.style.left = `${visible.left + window.scrollX + 8}px`;
 }
 
 function createBadge(img: HTMLImageElement, aiProbability: number): HTMLElement {
-  const rect = img.getBoundingClientRect();
   const badge = document.createElement('div');
   badge.textContent = `AI ${percent(aiProbability)}`;
   badge.style.cssText = [
     'position:absolute',
-    `top:${rect.top + window.scrollY + 8}px`,
-    `left:${rect.left + window.scrollX + 8}px`,
+    'display:none',
     'padding:2px 8px',
     'white-space:nowrap',
     'border-radius:999px',

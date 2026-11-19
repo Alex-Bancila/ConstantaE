@@ -11,35 +11,11 @@
   "currentTab": {
     "message": "Current tab"
   },
-  "demoListing": {
-    "message": "Demo listing"
-  },
-  "analysisMode": {
-    "message": "Analysis mode"
-  },
-  "modeDemo": {
-    "message": "Demo"
-  },
-  "modeLive": {
-    "message": "Live"
-  },
   "analyzeAgain": {
     "message": "Analyze again"
   },
-  "runDemoAnalysis": {
-    "message": "Run demo analysis"
-  },
   "analyzeCurrentPage": {
     "message": "Analyze current product page"
-  },
-  "demoDescription": {
-    "message": "Sample data only. Nothing is sent to the analysis service."
-  },
-  "liveMockDescription": {
-    "message": "Current page with simulated results. Nothing is sent to the analysis service."
-  },
-  "liveDescription": {
-    "message": "Listing details are sent to the configured analysis service."
   },
   "readyToAnalyze": {
     "message": "Ready to analyze"
@@ -71,33 +47,17 @@
   "sellerUnknown": {
     "message": "Seller unknown"
   },
-  "loadingSample": {
-    "message": "Loading sample analysis..."
-  },
   "extractingListing": {
     "message": "Extracting listing data..."
   },
-  "sendingData": {
-    "message": "Sending data to backend..."
-  },
   "analysisQueued": {
-    "message": "Analysis queued · checking results ($CURRENT$/$LIMIT$)",
-    "placeholders": {
-      "current": {
-        "content": "$1",
-        "example": "1"
-      },
-      "limit": {
-        "content": "$2",
-        "example": "60"
-      }
-    }
+    "message": "Analysis in progress..."
   },
   "errorUnsupportedPage": {
-    "message": "Product information could not be read from this page. Open an OLX or eMAG product listing, or the sample page on localhost, and try again. You can also use Demo mode."
+    "message": "Product information could not be read from this page. Open an OLX or eMAG product listing and try again."
   },
   "errorNoActiveTab": {
-    "message": "No active browser tab found. Open a product listing or use Demo mode."
+    "message": "No active browser tab found. Open a product listing and try again."
   },
   "errorAnalysisTimeout": {
     "message": "The analysis is taking too long. Try again."
@@ -106,7 +66,7 @@
     "message": "The analysis failed. Please try again."
   },
   "errorInvalidAnalysis": {
-    "message": "The backend returned an invalid analysis result. Please try again."
+    "message": "The analysis returned an invalid result. Please try again."
   },
   "imageAnalysis": {
     "message": "Image analysis"
@@ -223,26 +183,10 @@
     "message": "Mock analyses are never pending."
   },
   "errorBackendUnreachable": {
-    "message": "Cannot reach the backend at $URL$. Is it running?",
-    "placeholders": {
-      "url": {
-        "content": "$1",
-        "example": "http://localhost:8000"
-      }
-    }
+    "message": "The analysis service is unavailable right now. Please try again later."
   },
   "errorBackendHttp": {
-    "message": "The backend returned $STATUS$ for $PATH$.",
-    "placeholders": {
-      "status": {
-        "content": "$1",
-        "example": "503"
-      },
-      "path": {
-        "content": "$2",
-        "example": "/analyze"
-      }
-    }
+    "message": "The analysis service is unavailable right now. Please try again later."
   },
   "errorNoReply": {
     "message": "No reply from the other side of the extension."

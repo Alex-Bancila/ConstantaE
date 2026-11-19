@@ -13,7 +13,7 @@ export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
     warning: <><path d="m10.3 3.8-8.1 14A2 2 0 0 0 3.9 21h16.2a2 2 0 0 0 1.7-3.2l-8.1-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></>,
     scale: <><path d="M12 3v18M5 7h14M5 7l-3 6a4 4 0 0 0 6 0L5 7Zm14 0-3 6a4 4 0 0 0 6 0l-3-6ZM7 21h10"/></>,
     arrow: <><path d="M15 3h6v6M10 14 21 3"/><path d="M21 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6"/></>,
-    refresh: <><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5 9a8 8 0 0 1 14-2l1 5M4 12l1 5a8 8 0 0 0 14-2"/></>,
+    refresh: <><path d="M20 12a8 8 0 0 1-13.7 5.6L4 15.3"/><path d="M4 20v-4.7h4.7"/><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7"/><path d="M20 4v4.7h-4.7"/></>,
     loader: <><path d="M12 2a10 10 0 0 1 10 10"/></>,
     scan: <><path d="M7 3H5a2 2 0 0 0-2 2v2m14-4h2a2 2 0 0 1 2 2v2M3 17v2a2 2 0 0 0 2 2h2m10 0h2a2 2 0 0 0 2-2v-2"/><circle cx="12" cy="12" r="3"/></>,
   };

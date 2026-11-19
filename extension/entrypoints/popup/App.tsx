@@ -1,30 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { browser } from 'wxt/browser';
 import { formatNumber, t } from '@/lib/i18n';
-import examplePage from '../../../shared/example-page.json';
 import { errorMessage, sendToBackground, sendToTab } from '@/lib/messages';
-import { mockAnalysis } from '@/lib/mock';
 import type { AnalysisResponse, PageData } from '@/lib/types';
 import { AnalysisResults, Icon } from './sections';
 
-type Mode = 'demo' | 'live';
 type State =
   | { kind: 'idle' }
   | { kind: 'loading'; step: string }
   | { kind: 'error'; message: string }
   | { kind: 'done'; result: AnalysisResponse };
 
-const demoPage: PageData = examplePage;
 const POLL_INTERVAL_MS = 1000;
 const MAX_POLLS = 60;
-const USE_MOCK = import.meta.env.WXT_USE_MOCK === 'true';
 const UNSUPPORTED_PAGE_MESSAGE =
   t('errorUnsupportedPage');
 
 export default function App() {
-  const [mode, setMode] = useState<Mode>('demo');
   const [state, setState] = useState<State>({ kind: 'idle' });
-  const [page, setPage] = useState<PageData | null>(demoPage);
+  const [page, setPage] = useState<PageData | null>(null);
   const activeAnalysis = useRef<object | null>(null);
 
   useEffect(() => () => { activeAnalysis.current = null; }, []);
@@ -34,18 +28,10 @@ export default function App() {
     const request = {};
     activeAnalysis.current = request;
     const isCurrent = () => activeAnalysis.current === request;
-    if (mode === 'live') setPage(null);
-    setState({ kind: 'loading', step: mode === 'demo' ? t('loadingSample') : t('extractingListing') });
+    setPage(null);
+    setState({ kind: 'loading', step: t('extractingListing') });
 
     try {
-      if (mode === 'demo') {
-        await sleep(900);
-        if (!isCurrent()) return;
-        setPage(demoPage);
-        setState({ kind: 'done', result: mockAnalysis(demoPage) });
-        return;
-      }
-
       const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
       if (!isCurrent()) return;
       if (tab?.id == null) throw new Error(t('errorNoActiveTab'));
@@ -60,7 +46,6 @@ export default function App() {
       if (!isCurrent()) return;
       validatePage(extracted);
       setPage(extracted);
-      setState({ kind: 'loading', step: t('sendingData') });
 
       let result = await sendToBackground<AnalysisResponse>({ type: 'ANALYZE', page: extracted });
       if (!isCurrent()) return;
@@ -90,31 +75,18 @@ export default function App() {
     }
   }
 
-  function changeMode(nextMode: Mode) {
-    // Invalidate every awaited stage of the previous request, including polling.
-    activeAnalysis.current = null;
-    setMode(nextMode);
-    setState({ kind: 'idle' });
-    setPage(nextMode === 'demo' ? demoPage : null);
-  }
-
   return (
     <div className="popup-shell">
       <header className="popup-header flex items-center justify-between gap-3">
-        <div className="brand flex items-center gap-2"><span className="brand-mark"><Icon name="scan" size={18}/></span><h1>SafeBuy</h1></div>
+        <div className="brand flex items-center gap-2"><h1>Constanta E <span className="brand-note">in progress :)</span></h1></div>
         <span className="header-caption">{t('productReview')}</span>
       </header>
       <main className="popup-main">
         <div className="listing-toolbar flex items-center justify-between gap-3">
-          <p className="listing-source">{page ? page.site?.toUpperCase() || t('unknownSite') : t('currentTab')}{mode === 'demo' && <span>{t('demoListing')}</span>}</p>
-          <select className="mode-selector" aria-label={t('analysisMode')} value={mode} onChange={(event) => changeMode(event.currentTarget.value as Mode)}>
-            <option value="demo">{t('modeDemo')}</option>
-            <option value="live">{t('modeLive')}</option>
-          </select>
+          <p className="listing-source">{page ? page.site?.toUpperCase() || t('unknownSite') : t('currentTab')}</p>
         </div>
         {page && <ProductHeader page={page}/>}
-        {state.kind !== 'loading' && state.kind !== 'error' && <button type="button" className="button button-primary" onClick={() => void analyze()}><Icon name={state.kind === 'done' ? 'refresh' : 'scan'} size={16}/><span>{state.kind === 'done' ? t('analyzeAgain') : mode === 'demo' ? t('runDemoAnalysis') : t('analyzeCurrentPage')}</span></button>}
-        <p className="mode-description">{mode === 'demo' ? t('demoDescription') : USE_MOCK ? t('liveMockDescription') : t('liveDescription')}</p>
+        {state.kind !== 'loading' && state.kind !== 'error' && <button type="button" className="button button-primary" onClick={() => void analyze()}><Icon name={state.kind === 'done' ? 'refresh' : 'scan'} size={16}/><span>{state.kind === 'done' ? t('analyzeAgain') : t('analyzeCurrentPage')}</span></button>}
         {state.kind === 'idle' && <section className="idle-state" aria-label={t('readyToAnalyze')}><h2>{t('readyToAnalyze')}</h2><p>{t('readyDescription')}</p></section>}
         {state.kind === 'loading' && <section className="loading-state flex items-start gap-3" role="status"><span className="loading-icon shrink-0 motion-safe:animate-spin"><Icon name="loader" size={18}/></span><div className="min-w-0"><h2 className="state-title">{t('analyzingProduct')}</h2><p className="state-detail">{state.step}</p></div></section>}
         {state.kind === 'error' && <section className="error-state" role="alert"><div className="error-heading flex items-center gap-2"><Icon name="warning" size={16}/><h2 className="state-title">{t('analysisUnavailable')}</h2></div><p className="error-detail">{state.message}</p><button type="button" onClick={() => void analyze()} className="button button-primary retry-button">{t('tryAgain')}</button></section>}

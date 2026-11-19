@@ -11,35 +11,11 @@
   "currentTab": {
     "message": "Fila curentă"
   },
-  "demoListing": {
-    "message": "Anunț demonstrativ"
-  },
-  "analysisMode": {
-    "message": "Mod de analiză"
-  },
-  "modeDemo": {
-    "message": "Demo"
-  },
-  "modeLive": {
-    "message": "Real"
-  },
   "analyzeAgain": {
     "message": "Analizează din nou"
   },
-  "runDemoAnalysis": {
-    "message": "Rulează analiza demo"
-  },
   "analyzeCurrentPage": {
     "message": "Analizează pagina curentă a produsului"
-  },
-  "demoDescription": {
-    "message": "Doar date demonstrative. Nimic nu este trimis serviciului de analiză."
-  },
-  "liveMockDescription": {
-    "message": "Pagina curentă cu rezultate simulate. Nimic nu este trimis serviciului de analiză."
-  },
-  "liveDescription": {
-    "message": "Detaliile anunțului sunt trimise serviciului de analiză configurat."
   },
   "readyToAnalyze": {
     "message": "Pregătit pentru analiză"
@@ -71,33 +47,17 @@
   "sellerUnknown": {
     "message": "Vânzător necunoscut"
   },
-  "loadingSample": {
-    "message": "Se încarcă analiza demonstrativă..."
-  },
   "extractingListing": {
     "message": "Se citesc datele anunțului..."
   },
-  "sendingData": {
-    "message": "Datele sunt trimise serviciului de analiză..."
-  },
   "analysisQueued": {
-    "message": "Analiza este în așteptare · se verifică rezultatele ($CURRENT$/$LIMIT$)",
-    "placeholders": {
-      "current": {
-        "content": "$1",
-        "example": "1"
-      },
-      "limit": {
-        "content": "$2",
-        "example": "60"
-      }
-    }
+    "message": "Analiza este ?n curs..."
   },
   "errorUnsupportedPage": {
-    "message": "Informațiile despre produs nu au putut fi citite de pe această pagină. Deschide un anunț de produs pe OLX sau eMAG ori pagina demonstrativă de pe localhost și încearcă din nou. Poți folosi și modul Demo."
+    "message": "Informa?iile despre produs nu au putut fi citite de pe aceast? pagin?. Deschide un anun? de produs pe OLX sau eMAG ?i ?ncearc? din nou."
   },
   "errorNoActiveTab": {
-    "message": "Nu a fost găsită nicio filă activă în browser. Deschide un anunț de produs sau folosește modul Demo."
+    "message": "Nu a fost g?sit? nicio fil? activ? ?n browser. Deschide un anun? de produs ?i ?ncearc? din nou."
   },
   "errorAnalysisTimeout": {
     "message": "Analiza durează prea mult. Încearcă din nou."
@@ -106,7 +66,7 @@
     "message": "Analiza a eșuat. Încearcă din nou."
   },
   "errorInvalidAnalysis": {
-    "message": "Serviciul de analiză a returnat un rezultat nevalid. Încearcă din nou."
+    "message": "Analiza a returnat un rezultat nevalid. ?ncearc? din nou."
   },
   "imageAnalysis": {
     "message": "Analiza imaginilor"
@@ -223,26 +183,10 @@
     "message": "Analizele simulate nu sunt niciodată în așteptare."
   },
   "errorBackendUnreachable": {
-    "message": "Nu se poate contacta serviciul de analiză la $URL$. Este pornit?",
-    "placeholders": {
-      "url": {
-        "content": "$1",
-        "example": "http://localhost:8000"
-      }
-    }
+    "message": "Serviciul de analiz? nu este disponibil momentan. ?ncearc? din nou mai t?rziu."
   },
   "errorBackendHttp": {
-    "message": "Serviciul de analiză a returnat $STATUS$ pentru $PATH$.",
-    "placeholders": {
-      "status": {
-        "content": "$1",
-        "example": "503"
-      },
-      "path": {
-        "content": "$2",
-        "example": "/analyze"
-      }
-    }
+    "message": "Serviciul de analiz? nu este disponibil momentan. ?ncearc? din nou mai t?rziu."
   },
   "errorNoReply": {
     "message": "Nu s-a primit niciun răspuns de la cealaltă componentă a extensiei."
